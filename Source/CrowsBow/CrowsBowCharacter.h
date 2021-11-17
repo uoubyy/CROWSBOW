@@ -6,6 +6,9 @@
 #include "GameFramework/Character.h"
 #include "CrowsBowCharacter.generated.h"
 
+class USceneComponent;
+class ACrowsBowProjectile;
+
 UCLASS(config=Game)
 class ACrowsBowCharacter : public ACharacter
 {
@@ -18,6 +21,11 @@ class ACrowsBowCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+
+	/** Location on gun mesh where projectiles should spawn. */
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	USceneComponent* ArrowSpawnLocation;
+
 public:
 	ACrowsBowCharacter();
 
@@ -28,6 +36,14 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	/** Gun muzzle's offset from the characters location */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
+	FVector ArrowOffset;
+
+	/** Projectile class to spawn */
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	TSubclassOf<class ACrowsBowProjectile> ProjectileClass;
 
 protected:
 
@@ -60,6 +76,9 @@ protected:
 
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
+
+	/** Fires a projectile. */
+	void OnFireArrow();
 
 protected:
 	// APawn interface

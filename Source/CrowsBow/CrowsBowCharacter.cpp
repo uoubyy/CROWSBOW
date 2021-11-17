@@ -11,6 +11,8 @@
 
 #include "Components/PawnNoiseEmitterComponent.h"
 
+#include "CrowsBowProjectile.h"
+
 //////////////////////////////////////////////////////////////////////////
 // ACrowsBowCharacter
 
@@ -33,6 +35,11 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.2f;
+
+	// Arrow Spwan Location
+	ArrowSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+	ArrowSpawnLocation->SetupAttachment(RootComponent);
+	ArrowSpawnLocation->SetRelativeLocation(FVector(0.2f, 48.4f, -10.6f));
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -78,6 +85,9 @@ void ACrowsBowCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ACrowsBowCharacter::OnResetVR);
+
+	// Bind fire event
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ACrowsBowCharacter::OnFireArrow);
 }
 
 
@@ -100,6 +110,33 @@ void ACrowsBowCharacter::TouchStarted(ETouchIndex::Type FingerIndex, FVector Loc
 void ACrowsBowCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Location)
 {
 		StopJumping();
+}
+
+void ACrowsBowCharacter::OnFireArrow()
+{
+	if (ProjectileClass != nullptr)
+	{
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			const FRotator SpawnRotation = GetActorRotation();
+			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+			const FVector SpawnLocation = ((ArrowSpawnLocation != nullptr) ? ArrowSpawnLocation->GetComponentLocation() : GetActorLocation());// +SpawnRotation.RotateVector(ArrowOffset);
+
+			//Set Spawn Collision Handling Override
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+			// spawn the projectile at the muzzle
+			World->SpawnActor<ACrowsBowProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			if (GEngine)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("OnFireArrow %s"), *SpawnLocation.ToString()));
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Character Location %s"), *GetActorLocation().ToString()));
+			}
+		}
+	}
 }
 
 void ACrowsBowCharacter::TurnAtRate(float Rate)
