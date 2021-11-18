@@ -129,12 +129,6 @@ void ACrowsBowCharacter::OnFireArrow()
 
 			// spawn the projectile at the muzzle
 			World->SpawnActor<ACrowsBowProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-
-			if (GEngine)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("OnFireArrow %s"), *SpawnLocation.ToString()));
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Character Location %s"), *GetActorLocation().ToString()));
-			}
 		}
 	}
 }
