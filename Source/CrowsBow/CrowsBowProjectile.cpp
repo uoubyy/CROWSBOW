@@ -17,6 +17,7 @@ ACrowsBowProjectile::ACrowsBowProjectile()
 	CollisionComp->InitCapsuleSize(5.0f, 100.0f);
 	CollisionComp->BodyInstance.SetCollisionProfileName("Projectile");
 	CollisionComp->OnComponentHit.AddDynamic(this, &ACrowsBowProjectile::OnHit);		// set up a notification for when this component hits something blocking
+	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &ACrowsBowProjectile::OnBeginOverlap);
 
 	// Players can't walk on it
 	CollisionComp->SetWalkableSlopeOverride(FWalkableSlopeOverride(WalkableSlope_Unwalkable, 0.f));
@@ -51,4 +52,13 @@ void ACrowsBowProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor
 
 		Destroy();
 	}
+
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, FString::Printf(TEXT("OnHit object %s"), *OtherActor->GetName()));
+}
+
+void ACrowsBowProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Blue, FString::Printf(TEXT("OnOverlap object %s"), *OtherActor->GetName()));
 }
