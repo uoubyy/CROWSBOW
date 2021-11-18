@@ -12,5 +12,12 @@
 				"Engine"
 			]
 		}
+	],
+	"Plugins": [
+		{
+			"Name": "TwitchPlay",
+			"Enabled": true,
+			"MarketplaceURL": "https://www.unrealengine.com/marketplace/twitchplay-plugin"
+		}
 	]
 }
