@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+//#include "CrowsBowEnumName.h"
 #include "CrowsBowProjectile.generated.h"
 
 class UCapsuleComponent;
@@ -22,10 +23,14 @@ class CROWSBOW_API ACrowsBowProjectile : public AActor
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
-public:	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FArrowHitDelegate, FString, _ActorName, float, _DamgeValue);
+
+public:
+	UPROPERTY(EditAnywhere)
+	float DamageValue;
+
 	UPROPERTY(VisibleAnywhere, Category = Projectile)
 	UCapsuleComponent* CollisionComp;
-
 
 	// Sets default values for this actor's properties
 	ACrowsBowProjectile();
@@ -41,6 +46,9 @@ public:
 	UCapsuleComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+	UPROPERTY(BlueprintAssignable)
+	FArrowHitDelegate OnArrowHitEvent;
 
 protected:
 	virtual void BeginPlay() override;

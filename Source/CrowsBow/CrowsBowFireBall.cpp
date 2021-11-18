@@ -1,22 +1,22 @@
 //  Copyright Yanyi Bao. All Rights Reserved.
 
 
-#include "CrowsBoneFireBall.h"
+#include "CrowsBowFireBall.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
-ACrowsBoneFireBall::ACrowsBoneFireBall()
+ACrowsBowFireBall::ACrowsBowFireBall()
 {
 }
 
-void ACrowsBoneFireBall::BeginPlay()
+void ACrowsBowFireBall::BeginPlay()
 {
 	Super::BeginPlay();
 
 	ProjectileComp = FindComponentByClass<UProjectileMovementComponent>();
 }
 
-void ACrowsBoneFireBall::ActiveFireBall(FVector location, FRotator rotation, FVector direction)
+void ACrowsBowFireBall::ActiveFireBall(FVector location, FRotator rotation, FVector direction)
 {
 	SetActorHiddenInGame(false);
 	
@@ -24,10 +24,10 @@ void ACrowsBoneFireBall::ActiveFireBall(FVector location, FRotator rotation, FVe
 	ProjectileComp->Activate(true);
 	SetActorLocationAndRotation(location, rotation);
 
-	GetWorldTimerManager().SetTimer(DeActiveTimerHandle, this, &ACrowsBoneFireBall::DeActiveFireBall, 1.0f, false);
+	GetWorldTimerManager().SetTimer(DeActiveTimerHandle, this, &ACrowsBowFireBall::DeActiveFireBall, 1.0f, false);
 }
 
-void ACrowsBoneFireBall::DeActiveFireBall()
+void ACrowsBowFireBall::DeActiveFireBall()
 {
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, "DeActive Fire Ball.");

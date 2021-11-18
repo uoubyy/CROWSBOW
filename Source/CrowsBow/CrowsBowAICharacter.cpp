@@ -5,7 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
-#include "CrowsBoneFireBall.h"
+#include "CrowsBowFireBall.h"
 
 #include "DrawDebugHelpers.h"
 
@@ -119,7 +119,7 @@ void ACrowsBowAICharacter::AttackPlayer(FVector tergetLoc)
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			FireBallActor = World->SpawnActor<ACrowsBoneFireBall>(FireBallClass, SocketLocation, spawnRotation, ActorSpawnParams);
+			FireBallActor = World->SpawnActor<ACrowsBowFireBall>(FireBallClass, SocketLocation, spawnRotation, ActorSpawnParams);
 
 			FireBallActor->ActiveFireBall(SocketLocation, spawnRotation, forwardDir);
 		}

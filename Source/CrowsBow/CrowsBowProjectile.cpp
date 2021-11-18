@@ -45,12 +45,11 @@ void ACrowsBowProjectile::BeginPlay()
 
 void ACrowsBowProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
-	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+	Destroy();
 
-		Destroy();
+	if(OtherActor->ActorHasTag(TEXT("Enemy_Bat")))
+	{
+		//OnArrowHitEvent.Broadcast(OtherActor)
 	}
 
 	if (GEngine)

@@ -8,7 +8,7 @@
 
 class UPawnSensingComponent;
 class ACrowsBowCharacter;
-class ACrowsBoneFireBall;
+class ACrowsBowFireBall;
 
 UCLASS()
 class CROWSBOW_API ACrowsBowAICharacter : public ACharacter
@@ -17,7 +17,7 @@ class CROWSBOW_API ACrowsBowAICharacter : public ACharacter
 
 public:
 	UPROPERTY(EditDefaultsOnly, Category = Ability)
-	TSubclassOf<class ACrowsBoneFireBall> FireBallClass;
+	TSubclassOf<class ACrowsBowFireBall> FireBallClass;
 
 	UPROPERTY(EditDefaultsOnly, Category= Ability)
 	float MaxAttackDistance = 500.0f;// fire ball attack area
@@ -52,7 +52,7 @@ private:
 	FVector TargetDirection;
 
 	UPROPERTY()
-	ACrowsBoneFireBall* FireBallActor = nullptr;
+	ACrowsBowFireBall* FireBallActor = nullptr;
 
 	UFUNCTION()
 	void TurnToSenseActor();
