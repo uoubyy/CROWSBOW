@@ -29,9 +29,6 @@ void ACrowsBowFireBall::ActiveFireBall(FVector location, FRotator rotation, FVec
 
 void ACrowsBowFireBall::DeActiveFireBall()
 {
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, "DeActive Fire Ball.");
-
 	SetActorHiddenInGame(true);
 	ProjectileComp->Activate(false);
 }

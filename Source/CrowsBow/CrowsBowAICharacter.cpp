@@ -6,6 +6,9 @@
 #include "Perception/PawnSensingComponent.h"
 
 #include "CrowsBowFireBall.h"
+#include <Components/WidgetComponent.h>
+#include "CrowsBowHealthBarWidget.h"
+#include "CrowsBowProjectile.h"
 
 #include "DrawDebugHelpers.h"
 
@@ -18,6 +21,11 @@ ACrowsBowAICharacter::ACrowsBowAICharacter()
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 
 	GetCharacterMovement()->GravityScale = 0;
+
+	HealthWidgetComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBar"));
+	HealthWidgetComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
+	CurHealth = MaxHealth;
 }
 
 // Called when the game starts or when spawned
@@ -27,7 +35,9 @@ void ACrowsBowAICharacter::BeginPlay()
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ACrowsBowAICharacter::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &ACrowsBowAICharacter::OnNoiseHeard);
-	
+
+	HealthBar = Cast<UCrowsBowHealthBarWidget>(HealthWidgetComp->GetUserWidgetObject());
+	HealthBar->UpdateHealthPercentage(1.0f);
 }
 
 void ACrowsBowAICharacter::OnPawnSeen(APawn* SeenPawn)
@@ -128,4 +138,18 @@ void ACrowsBowAICharacter::AttackPlayer(FVector tergetLoc)
 	{
 		FireBallActor->ActiveFireBall(SocketLocation, spawnRotation, forwardDir);
 	}
+}
+
+void ACrowsBowAICharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, "ACrowsBowAICharacter hitted");
+
+	ACrowsBowProjectile* arrow = Cast<ACrowsBowProjectile>(OtherActor);
+	if (arrow)
+	{
+		CurHealth -= arrow->DamageValue;
+	}
+
+	HealthBar->UpdateHealthPercentage(CurHealth / MaxHealth);
 }

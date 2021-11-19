@@ -25,6 +25,9 @@ public:
 	// Sets default values for this character's properties
 	ACrowsBowAICharacter();
 
+	UFUNCTION(BlueprintCallable)
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,6 +43,18 @@ protected:
 
 	UFUNCTION()
 	void OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume);
+
+	UPROPERTY(VisibleAnywhere)
+	class UWidgetComponent* HealthWidgetComp;
+
+	UPROPERTY(VisibleAnywhere, Category = Health)
+	class UCrowsBowHealthBarWidget* HealthBar;
+
+	UPROPERTY(EditDefaultsOnly, Category = Health)
+	float MaxHealth = 100.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = Health)
+	float CurHealth;
 
 private:
 	bool ShouldTurn = false;

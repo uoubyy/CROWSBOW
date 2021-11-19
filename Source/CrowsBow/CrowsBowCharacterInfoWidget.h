@@ -1,0 +1,46 @@
+//  Copyright Yanyi Bao. All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "Blueprint/UserWidget.h"
+#include "CrowsBowCharacterInfoWidget.generated.h"
+
+class UImage;
+
+/**
+ * 
+ */
+UCLASS()
+class CROWSBOW_API UCrowsBowCharacterInfoWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* Avatar;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* WeaponSlot1;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* WeaponSlot2;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* Life1;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* Life2;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	UImage* Life3;
+
+	UPROPERTY(BlueprintReadOnly)
+	int LeftLife = 3;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateLifeStatus(int currentLife);
+
+	virtual void NativeConstruct() override;
+	
+};
