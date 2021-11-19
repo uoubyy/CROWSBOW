@@ -30,6 +30,9 @@ public:
 	UPROPERTY(EditAnywhere, Category=FireBall)
 	float ImpulseForce = 1.0f;
 
+	UPROPERTY(VisibleAnywhere, Category = Damage)
+	float DamageValue = 50.0f;
+
 protected:
 	UPROPERTY()
 	FTimerHandle ActiveTimerHandle;

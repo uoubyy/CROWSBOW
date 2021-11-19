@@ -8,6 +8,7 @@
 
 class USceneComponent;
 class ACrowsBowProjectile;
+class UCrowsBowCharacterInfoWidget;
 
 UCLASS(config=Game)
 class ACrowsBowCharacter : public ACharacter
@@ -45,10 +46,24 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 	TSubclassOf<class ACrowsBowProjectile> ProjectileClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = HUD)
+	TSubclassOf<class UCrowsBowCharacterInfoWidget> HUDInfoWidgetClass;
+
+	UPROPERTY(VisibleAnywhere)
+	UCrowsBowCharacterInfoWidget* HUDInfoWidget;
+
 protected:
+
+	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI")
 	class UPawnNoiseEmitterComponent* NoiseEmitterComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = Health)
+	float MaxHealth = 600.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = Health)
+	float CurHealth;
 
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
@@ -90,5 +105,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	// UPrimitiveComponent*, OverlappedComponent, AActor*, OtherActor, UPrimitiveComponent*, OtherComp, int32, OtherBodyIndex, bool, bFromSweep, const FHitResult &, SweepResult
+	UFUNCTION(BlueprintCallable)
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
 

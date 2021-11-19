@@ -16,6 +16,10 @@ class CROWSBOW_API UCrowsBowCharacterInfoWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateLifeStatus(int currentLife);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* Avatar;
@@ -38,8 +42,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	int LeftLife = 3;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateLifeStatus(int currentLife);
+
 
 	virtual void NativeConstruct() override;
 	

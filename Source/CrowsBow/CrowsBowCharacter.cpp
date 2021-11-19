@@ -12,6 +12,8 @@
 #include "Components/PawnNoiseEmitterComponent.h"
 
 #include "CrowsBowProjectile.h"
+#include "CrowsBowFireBall.h"
+#include "CrowsBowCharacterInfoWidget.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ACrowsBowCharacter
@@ -56,6 +58,17 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
+
+	CurHealth = MaxHealth;
+
+	
+}
+
+void ACrowsBowCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+	HUDInfoWidget = Cast<UCrowsBowCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
+	HUDInfoWidget->AddToViewport();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -172,4 +185,21 @@ void ACrowsBowCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+
+void ACrowsBowCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ACrowsBowFireBall* fireBall = Cast<ACrowsBowFireBall>(OtherActor);
+	if (fireBall)
+	{
+		//fireBall->DeActiveFireBall();
+		CurHealth -= fireBall->DamageValue;
+		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
+	}
+
+	int curLife = int(CurHealth / MaxHealth * 3);
+
+	if (HUDInfoWidget)
+		HUDInfoWidget->UpdateLifeStatus(curLife);
 }
