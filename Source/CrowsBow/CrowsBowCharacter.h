@@ -56,8 +56,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchWeapon();
 
+	UFUNCTION(BlueprintCallable)
+	void SwitchWeaponTo(WeaponType weaponType);
+
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
-		WeaponType CurWeapon;
+	WeaponType CurWeapon;
 
 protected:
 	virtual void BeginPlay() override;

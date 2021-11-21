@@ -143,6 +143,13 @@ void ACrowsBowCharacter::SwitchWeapon()
 }
 
 
+void ACrowsBowCharacter::SwitchWeaponTo(WeaponType weaponType)
+{
+	CurWeapon = weaponType;
+	HUDInfoWidget->SwitchWeapon(CurWeapon);
+}
+
+
 void ACrowsBowCharacter::Weapon_1Resume()
 {
 	CurArrowNum++;
