@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "CrowsBowEnumNames.h"
 #include "CrowsBowCharacterInfoWidget.generated.h"
 
 class UImage;
@@ -22,6 +23,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateArrowCD(int leftArrowNum);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void SwitchWeapon(WeaponType weaponType);
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))

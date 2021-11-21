@@ -61,6 +61,8 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 
 	CurHealth = MaxHealth;
 	CurArrowNum = MaxArrowNum;
+
+	CurWeapon = WeaponType::WP_ARROW;
 }
 
 void ACrowsBowCharacter::BeginPlay()
@@ -100,6 +102,8 @@ void ACrowsBowCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 
 	// Bind fire event
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ACrowsBowCharacter::OnFireArrow);
+	// Bind switch weapon event
+	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &ACrowsBowCharacter::SwitchWeapon);
 }
 
 
@@ -123,6 +127,21 @@ void ACrowsBowCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Loc
 {
 		StopJumping();
 }
+
+void ACrowsBowCharacter::SwitchWeapon()
+{
+	
+	if (CurWeapon == WeaponType::WP_ARROW)
+		CurWeapon = WeaponType::WP_SWORD;
+	else
+		CurWeapon = WeaponType::WP_ARROW;
+
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, GetEnumValueAsString<WeaponType>("WeaponType", CurWeapon));
+
+	HUDInfoWidget->SwitchWeapon(CurWeapon);
+}
+
 
 void ACrowsBowCharacter::Weapon_1Resume()
 {

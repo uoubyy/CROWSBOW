@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CrowsBowEnumNames.h"
 #include "GameFramework/Character.h"
 #include "CrowsBowCharacter.generated.h"
 
@@ -49,8 +50,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = HUD)
 	TSubclassOf<class UCrowsBowCharacterInfoWidget> HUDInfoWidgetClass;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	UCrowsBowCharacterInfoWidget* HUDInfoWidget;
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchWeapon();
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+		WeaponType CurWeapon;
 
 protected:
 	virtual void BeginPlay() override;
