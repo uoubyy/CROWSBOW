@@ -81,7 +81,7 @@ void ACrowsBowAICharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 	if (!ShouldTurn)
 	{
 		ShouldTurn = true;
-		GetWorldTimerManager().SetTimer(TurnningTimerHandle, this, &ACrowsBowAICharacter::TurnToSenseActor, 0.05f, true);
+		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &ACrowsBowAICharacter::TurnToSenseActor, 0.05f, true);
 	}
 }
 
@@ -93,7 +93,7 @@ void ACrowsBowAICharacter::TurnToSenseActor()
 	{
 		ShouldTurn = false;
 		ShouldChase = false;
-		GetWorldTimerManager().ClearTimer(TurnningTimerHandle);
+		GetWorldTimerManager().ClearTimer(TurningTimerHandle);
 		GetWorldTimerManager().ClearTimer(ChasingTimeHandler);
 	}
 }

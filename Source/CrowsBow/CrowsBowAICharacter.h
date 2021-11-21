@@ -60,7 +60,7 @@ private:
 	bool ShouldTurn = false;
 	bool ShouldChase = false;
 
-	FTimerHandle TurnningTimerHandle;
+	FTimerHandle TurningTimerHandle;
 	FTimerHandle ChasingTimeHandler;
 	FTimerHandle AttackTimeHandler;
 

@@ -53,7 +53,6 @@ public:
 	UCrowsBowCharacterInfoWidget* HUDInfoWidget;
 
 protected:
-
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="AI")
@@ -64,6 +63,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = Health)
 	float CurHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = Ability)
+	int MaxArrowNum = 3;
+
+	UPROPERTY(VisibleAnywhere, Category = Ability)
+	int CurArrowNum;
 
 	/** Resets HMD orientation in VR. */
 	void OnResetVR();
@@ -109,5 +114,12 @@ public:
 	// UPrimitiveComponent*, OverlappedComponent, AActor*, OtherActor, UPrimitiveComponent*, OtherComp, int32, OtherBodyIndex, bool, bFromSweep, const FHitResult &, SweepResult
 	UFUNCTION(BlueprintCallable)
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+private:
+	FTimerHandle Weapon_1CDHandler;
+	FTimerHandle Weapon_2CDHandler;
+
+	UFUNCTION()
+	void Weapon_1Resume();
 };
 

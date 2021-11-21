@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateLifeStatus(int currentLife);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateArrowCD(int leftArrowNum);
+
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* Avatar;
@@ -41,8 +44,6 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly)
 	int LeftLife = 3;
-
-
 
 	virtual void NativeConstruct() override;
 	

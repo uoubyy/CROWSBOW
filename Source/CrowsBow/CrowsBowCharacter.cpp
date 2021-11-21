@@ -60,8 +60,7 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
 
 	CurHealth = MaxHealth;
-
-	
+	CurArrowNum = MaxArrowNum;
 }
 
 void ACrowsBowCharacter::BeginPlay()
@@ -125,8 +124,30 @@ void ACrowsBowCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Loc
 		StopJumping();
 }
 
+void ACrowsBowCharacter::Weapon_1Resume()
+{
+	CurArrowNum++;
+	CurArrowNum = FMath::Clamp(CurArrowNum, 0, MaxArrowNum);
+
+	if (CurArrowNum >= MaxArrowNum)
+		GetWorldTimerManager().PauseTimer(Weapon_1CDHandler);
+
+	HUDInfoWidget->UpdateArrowCD(CurArrowNum);
+}
+
 void ACrowsBowCharacter::OnFireArrow()
 {
+	if (CurArrowNum <= 0)
+		return;
+
+	CurArrowNum--;
+	HUDInfoWidget->UpdateArrowCD(CurArrowNum);
+
+	if(GetWorldTimerManager().IsTimerActive(Weapon_1CDHandler) == false || GetWorldTimerManager().IsTimerPaused(Weapon_1CDHandler))
+	{
+		GetWorldTimerManager().SetTimer(Weapon_1CDHandler, this, &ACrowsBowCharacter::Weapon_1Resume, 2.0f, true);
+	}
+
 	if (ProjectileClass != nullptr)
 	{
 		UWorld* const World = GetWorld();
