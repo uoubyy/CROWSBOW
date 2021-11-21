@@ -108,7 +108,7 @@ void ACrowsBowAICharacter::ChaseToSenseActor()
 
 void ACrowsBowAICharacter::AttackPlayer(FVector tergetLoc)
 {
-	const FVector SocketLocation = GetMesh()->GetSocketLocation("Nose");
+	const FVector SocketLocation = GetMesh()->GetSocketLocation("Bone_002");
 	FVector forwardDir = tergetLoc - GetActorLocation();
 	forwardDir.Z = 0.0f;
 	forwardDir.Normalize();
