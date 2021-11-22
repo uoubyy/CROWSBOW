@@ -68,8 +68,20 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 void ACrowsBowCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	HUDInfoWidget = Cast<UCrowsBowCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
+
+}
+
+void ACrowsBowCharacter::GameStart()
+{
+	if(HUDInfoWidget == nullptr)
+		HUDInfoWidget = Cast<UCrowsBowCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
 	HUDInfoWidget->AddToViewport();
+}
+
+void ACrowsBowCharacter::GameReStart()
+{
+	CurHealth = MaxHealth;
+	UpdateHUD();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -163,7 +175,7 @@ void ACrowsBowCharacter::Weapon_1Resume()
 
 void ACrowsBowCharacter::OnFireArrow()
 {
-	if (CurArrowNum <= 0)
+	if (CurArrowNum <= 0 || HUDInfoWidget == nullptr)
 		return;
 
 	CurArrowNum--;
@@ -237,6 +249,9 @@ void ACrowsBowCharacter::MoveRight(float Value)
 
 void ACrowsBowCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (CurHealth <= 0)
+		return;
+
 	ACrowsBowFireBall* fireBall = Cast<ACrowsBowFireBall>(OtherActor);
 	if (fireBall)
 	{
@@ -245,7 +260,15 @@ void ACrowsBowCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
 	}
 
-	int curLife = int(CurHealth / MaxHealth * 3);
+	UpdateHUD();
+
+	if (CurHealth <= 0)
+		GameOver();
+}
+
+void ACrowsBowCharacter::UpdateHUD()
+{
+	int curLife = int((CurHealth + MaxHealth / 3) / MaxHealth * 3);
 
 	if (HUDInfoWidget)
 		HUDInfoWidget->UpdateLifeStatus(curLife);

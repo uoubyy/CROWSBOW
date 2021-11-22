@@ -59,6 +59,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchWeaponTo(WeaponType weaponType);
 
+	UFUNCTION(BlueprintCallable)
+	void GameStart();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void GameOver();
+
+	UFUNCTION(BlueprintCallable)
+	void GameReStart();
+
+	UFUNCTION()
+	void UpdateHUD();
+
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	WeaponType CurWeapon;
 

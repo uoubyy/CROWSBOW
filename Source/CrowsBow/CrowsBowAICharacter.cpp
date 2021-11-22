@@ -15,8 +15,8 @@
 // Sets default values
 ACrowsBowAICharacter::ACrowsBowAICharacter()
 {
-	BatEyesMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BatEyesMesh"));
-	BatEyesMesh->AttachTo(GetMesh(), FName(TEXT("Face")), EAttachLocation::KeepRelativeOffset, false);
+	//BatEyesMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("BatEyesMesh"));
+	//BatEyesMesh->AttachTo(GetMesh(), FName(TEXT("Face")), EAttachLocation::KeepRelativeOffset, false);
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 
