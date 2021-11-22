@@ -62,6 +62,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	WeaponType CurWeapon;
 
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	UMeshComponent* SwordMeshComp;
+
 protected:
 	virtual void BeginPlay() override;
 
