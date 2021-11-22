@@ -66,12 +66,13 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 
 	SwordMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwordComp"));
 	SwordMeshComp->SetupAttachment(GetMesh(), "SwordSocket");
+	
 }
 
 void ACrowsBowCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	SwordMeshComp->SetVisibility(CurWeapon == WeaponType::WP_SWORD);
 }
 
 void ACrowsBowCharacter::GameStart()
@@ -150,7 +151,6 @@ void ACrowsBowCharacter::TouchStopped(ETouchIndex::Type FingerIndex, FVector Loc
 
 void ACrowsBowCharacter::SwitchWeapon()
 {
-	
 	if (CurWeapon == WeaponType::WP_ARROW)
 		CurWeapon = WeaponType::WP_SWORD;
 	else
@@ -160,6 +160,8 @@ void ACrowsBowCharacter::SwitchWeapon()
 		GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, GetEnumValueAsString<WeaponType>("WeaponType", CurWeapon));
 
 	HUDInfoWidget->SwitchWeapon(CurWeapon);
+
+	SwordMeshComp->SetVisibility(CurWeapon == WeaponType::WP_SWORD);
 }
 
 
@@ -167,6 +169,8 @@ void ACrowsBowCharacter::SwitchWeaponTo(WeaponType weaponType)
 {
 	CurWeapon = weaponType;
 	HUDInfoWidget->SwitchWeapon(CurWeapon);
+
+	SwordMeshComp->SetVisibility(CurWeapon == WeaponType::WP_SWORD);
 }
 
 
