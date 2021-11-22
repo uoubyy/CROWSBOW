@@ -63,6 +63,9 @@ ACrowsBowCharacter::ACrowsBowCharacter()
 	CurArrowNum = MaxArrowNum;
 
 	CurWeapon = WeaponType::WP_ARROW;
+
+	SwordMeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SwordComp"));
+	SwordMeshComp->SetupAttachment(GetMesh(), "SwordSocket");
 }
 
 void ACrowsBowCharacter::BeginPlay()
@@ -73,9 +76,14 @@ void ACrowsBowCharacter::BeginPlay()
 
 void ACrowsBowCharacter::GameStart()
 {
-	if(HUDInfoWidget == nullptr)
+	if (HUDInfoWidget == nullptr)
+	{
 		HUDInfoWidget = Cast<UCrowsBowCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
-	HUDInfoWidget->AddToViewport();
+		HUDInfoWidget->AddToViewport();
+	}
+	UWorld* const World = GetWorld();
+	if(World)
+		EnableInput(World->GetFirstPlayerController());
 }
 
 void ACrowsBowCharacter::GameReStart()
@@ -113,7 +121,7 @@ void ACrowsBowCharacter::SetupPlayerInputComponent(class UInputComponent* Player
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &ACrowsBowCharacter::OnResetVR);
 
 	// Bind fire event
-	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ACrowsBowCharacter::OnFireArrow);
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &ACrowsBowCharacter::StartAttack);
 	// Bind switch weapon event
 	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &ACrowsBowCharacter::SwitchWeapon);
 }
@@ -171,6 +179,14 @@ void ACrowsBowCharacter::Weapon_1Resume()
 		GetWorldTimerManager().PauseTimer(Weapon_1CDHandler);
 
 	HUDInfoWidget->UpdateArrowCD(CurArrowNum);
+}
+
+void ACrowsBowCharacter::StartAttack()
+{
+	if (CurWeapon == WeaponType::WP_SWORD)
+		OnSlashSword();
+	else
+		OnFireArrow();
 }
 
 void ACrowsBowCharacter::OnFireArrow()

@@ -150,6 +150,10 @@ void ACrowsBowAICharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	{
 		CurHealth -= arrow->DamageValue;
 	}
+	else if (OtherComp->ComponentHasTag("Sword"))
+	{
+
+	}
 
 	HealthBar->UpdateHealthPercentage(CurHealth / MaxHealth);
 }

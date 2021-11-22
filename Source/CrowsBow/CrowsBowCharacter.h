@@ -122,8 +122,15 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	UFUNCTION()
+	void StartAttack();
+
+	UFUNCTION()
 	/** Fires a projectile. */
 	void OnFireArrow();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSlashSword();
 
 protected:
 	// APawn interface
