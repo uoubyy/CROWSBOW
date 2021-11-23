@@ -15,6 +15,8 @@
 #include "CrowsBowFireBall.h"
 #include "CrowsBowCharacterInfoWidget.h"
 
+#include "CrowsBowEnemyBCharacter.h"
+
 //////////////////////////////////////////////////////////////////////////
 // ACrowsBowCharacter
 
@@ -273,13 +275,18 @@ void ACrowsBowCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		return;
 
 	ACrowsBowFireBall* fireBall = Cast<ACrowsBowFireBall>(OtherActor);
+	ACrowsBowEnemyBCharacter* enemyB = Cast<ACrowsBowEnemyBCharacter>(OtherActor);
 	if (fireBall)
 	{
 		//fireBall->DeActiveFireBall();
 		CurHealth -= fireBall->DamageValue;
-		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
+		
+	}else if(enemyB)
+	{
+		CurHealth -= 15.0f;// TODO skeleton damage
 	}
 
+		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
 	UpdateHUD();
 
 	if (CurHealth <= 0)
