@@ -45,8 +45,11 @@ void ACrowsBowEnemyBCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	FVector newPos = UKismetMathLibrary::VInterpTo(GetActorLocation(), TargetLocation - TargetDirection * MaxAttackDistance, DeltaSeconds, DeltaSeconds * ChaseSpeed);
-	SetActorLocation(newPos);
+	if (GetWorldTimerManager().IsTimerActive(ChasingTimeHandler))
+	{
+		FVector newPos = UKismetMathLibrary::VInterpTo(GetActorLocation(), TargetLocation - TargetDirection * MaxAttackDistance, DeltaSeconds, DeltaSeconds * ChaseSpeed);
+		SetActorLocation(newPos);
+	}
 
 	SetActorRotation(FMath::Lerp(GetActorRotation(), TargetDirection.Rotation(), 0.05f));
 
@@ -135,7 +138,7 @@ void ACrowsBowEnemyBCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, "Enemy OnHit");
 
-	if(OtherComp->ComponentHasTag("Sword"))
+	if(OtherComp->ComponentHasTag("Sword") && OtherComp->IsVisible())
 	{
 		CurHealth -= 20.0f; // TODO config
 	}

@@ -19,7 +19,7 @@ public:
 	ACrowsBowFireBall();
 
 	UFUNCTION(BlueprintImplementableEvent, Category= FireBall)
-	void FaceToPlayerCamera();
+	void ActiveParticle(bool state);
 
 	UFUNCTION()
 	void ActiveFireBall(FVector location, FRotator rotation, FVector direction);

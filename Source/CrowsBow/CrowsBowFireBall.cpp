@@ -19,6 +19,7 @@ void ACrowsBowFireBall::BeginPlay()
 void ACrowsBowFireBall::ActiveFireBall(FVector location, FRotator rotation, FVector direction)
 {
 	SetActorHiddenInGame(false);
+	ActiveParticle(true);
 	
 	ProjectileComp->Velocity = direction * 1000.0f;
 	ProjectileComp->Activate(true);
@@ -31,4 +32,5 @@ void ACrowsBowFireBall::DeActiveFireBall()
 {
 	SetActorHiddenInGame(true);
 	ProjectileComp->Activate(false);
+	ActiveParticle(false);
 }

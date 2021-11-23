@@ -156,8 +156,8 @@ void ACrowsBowCharacter::SwitchWeapon()
 	else
 		CurWeapon = WeaponType::WP_ARROW;
 
-	if (GEngine)
-		GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, GetEnumValueAsString<WeaponType>("WeaponType", CurWeapon));
+	//if (GEngine)
+	//	GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, GetEnumValueAsString<WeaponType>("WeaponType", CurWeapon));
 
 	HUDInfoWidget->SwitchWeapon(CurWeapon);
 
@@ -288,7 +288,15 @@ void ACrowsBowCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 
 void ACrowsBowCharacter::UpdateHUD()
 {
-	int curLife = int((CurHealth + MaxHealth / 3) / MaxHealth * 3);
+	int curLife = 0;
+
+	float step = MaxHealth / 3.0f;
+	if (CurHealth > step * 2)
+		curLife = 3;
+	else if (CurHealth > step)
+		curLife = 2;
+	else if (CurHealth > 0.0)
+		curLife = 1;
 
 	if (HUDInfoWidget)
 		HUDInfoWidget->UpdateLifeStatus(curLife);
