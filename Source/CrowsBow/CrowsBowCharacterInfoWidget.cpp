@@ -5,5 +5,5 @@
 
 void UCrowsBowCharacterInfoWidget::NativeConstruct()
 {
-	UpdateLifeStatus(3);
+	UpdateLifeStatus(3, 1.0f);
 }

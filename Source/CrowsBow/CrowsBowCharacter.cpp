@@ -283,15 +283,40 @@ void ACrowsBowCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		
 	}else if(enemyB)
 	{
-		CurHealth -= 15.0f;// TODO skeleton damage
+		if (GetWorldTimerManager().IsTimerActive(LostBloodTimeHandler) == false)
+		{
+			LostBloodDel.BindUFunction(this, FName("LostBloodConstant"), 5.0f);
+			GetWorldTimerManager().SetTimer(LostBloodTimeHandler, LostBloodDel, 0.5f, true);
+		}
 	}
 
-		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
+	CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
 	UpdateHUD();
 
 	if (CurHealth <= 0)
 		GameOver();
 }
+
+void ACrowsBowCharacter::OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	ACrowsBowEnemyBCharacter* enemyB = Cast<ACrowsBowEnemyBCharacter>(OtherActor);
+	if (enemyB)
+	{
+		GetWorldTimerManager().ClearTimer(LostBloodTimeHandler);
+	}
+}
+
+
+void ACrowsBowCharacter::LostBloodConstant(float value)
+{
+	CurHealth -= value;// TODO skeleton damage
+	CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
+	UpdateHUD();
+
+	if (CurHealth <= 0)
+		GameOver();
+}
+
 
 void ACrowsBowCharacter::UpdateHUD()
 {
@@ -306,5 +331,5 @@ void ACrowsBowCharacter::UpdateHUD()
 		curLife = 1;
 
 	if (HUDInfoWidget)
-		HUDInfoWidget->UpdateLifeStatus(curLife);
+		HUDInfoWidget->UpdateLifeStatus(curLife, CurHealth / MaxHealth);
 }
