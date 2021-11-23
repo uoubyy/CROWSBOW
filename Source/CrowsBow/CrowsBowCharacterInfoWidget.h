@@ -19,7 +19,7 @@ class CROWSBOW_API UCrowsBowCharacterInfoWidget : public UUserWidget
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void UpdateLifeStatus(int currentLife);
+	void UpdateLifeStatus(int currentLife, float percent);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateArrowCD(int leftArrowNum);

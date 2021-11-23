@@ -147,11 +147,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION(BlueprintCallable)
+	void OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 private:
 	FTimerHandle Weapon_1CDHandler;
 	FTimerHandle Weapon_2CDHandler;
 
+	FTimerHandle LostBloodTimeHandler;
+	FTimerDelegate LostBloodDel;
+
 	UFUNCTION()
 	void Weapon_1Resume();
+
+	UFUNCTION()
+		void LostBloodConstant(float value);
 };
 

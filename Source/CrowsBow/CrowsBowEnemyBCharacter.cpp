@@ -140,7 +140,7 @@ void ACrowsBowEnemyBCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 
 	if(OtherComp->ComponentHasTag("Sword") && OtherComp->IsVisible())
 	{
-		CurHealth -= 20.0f; // TODO config
+		CurHealth -= 0.3; // TODO config
 	}
 
 	HealthBar->UpdateHealthPercentage(CurHealth / MaxHealth);
