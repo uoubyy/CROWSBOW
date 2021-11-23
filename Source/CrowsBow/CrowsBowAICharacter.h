@@ -32,7 +32,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = BatEyes)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = BatEyes)
 	class USkeletalMeshComponent* BatEyesMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = Components)
@@ -44,7 +44,7 @@ protected:
 	UFUNCTION()
 	void OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume);
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(VisibleAnywhere, Category = Health)

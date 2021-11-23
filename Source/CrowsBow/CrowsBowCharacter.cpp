@@ -87,10 +87,12 @@ void ACrowsBowCharacter::GameStart()
 	UWorld* const World = GetWorld();
 	if(World)
 		EnableInput(World->GetFirstPlayerController());
+	bGameOver = false;
 }
 
 void ACrowsBowCharacter::GameReStart()
 {
+	bGameOver = false;
 	CurHealth = MaxHealth;
 	UpdateHUD();
 }
