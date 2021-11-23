@@ -152,8 +152,11 @@ void ACrowsBowAICharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActo
 	}
 	else if (OtherComp->ComponentHasTag("Sword"))
 	{
-
+		CurHealth -= 20.0f;//TODO config
 	}
 
 	HealthBar->UpdateHealthPercentage(CurHealth / MaxHealth);
+
+	if (CurHealth <= 0)
+		Destroy();
 }

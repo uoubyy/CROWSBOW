@@ -26,10 +26,18 @@ public:
 	UFUNCTION(BlueprintCallable, Category=Enemy)
 	EEnemyState GetEnemyState();
 
+	UPROPERTY(EditDefaultsOnly, Category = Ability)
+	float MaxAttackDistance = 50.0f;
+
+	UFUNCTION(BlueprintCallable)
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+		
 	UPROPERTY(VisibleAnywhere, Category=Enemy)
 	EEnemyState CurEnemyState;
 
@@ -54,6 +62,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Health)
 		float CurHealth;
 
+	UPROPERTY(VisibleAnywhere, Category = Movement)
+		float ChaseSpeed = 100.0f;
+
 public:	
 
 	UFUNCTION()
@@ -64,5 +75,17 @@ public:
 
 	UFUNCTION()
 		void AttackPlayer(FVector tergetLoc);
+
+private:
+
+	FVector TargetDirection;
+
+	FVector TargetLocation;
+
+	FTimerHandle ChasingTimeHandler;
+	FTimerHandle TurningTimerHandle;
+
+	UPROPERTY()
+		class UCharacterMovementComponent* EnemyMovementComp;
 
 };
