@@ -50,7 +50,7 @@ protected:
 	UFUNCTION()
 		void OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume);
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		class UWidgetComponent* HealthWidgetComp;
 
 	UPROPERTY(VisibleAnywhere, Category = Health)

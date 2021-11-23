@@ -9,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include <Components/WidgetComponent.h>
 #include "CrowsBowHealthBarWidget.h"
+#include "CrowsBowProjectile.h"
 
 // Sets default values
 ACrowsBowEnemyBCharacter::ACrowsBowEnemyBCharacter()
@@ -52,7 +53,6 @@ void ACrowsBowEnemyBCharacter::Tick(float DeltaSeconds)
 	}
 
 	SetActorRotation(FMath::Lerp(GetActorRotation(), TargetDirection.Rotation(), 0.05f));
-
 }
 
 EEnemyState ACrowsBowEnemyBCharacter::GetEnemyState()
@@ -138,9 +138,14 @@ void ACrowsBowEnemyBCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(0, 1.5f, FColor::Red, "Enemy OnHit");
 
-	if(OtherComp->ComponentHasTag("Sword") && OtherComp->IsVisible())
+	ACrowsBowProjectile* arrow = Cast<ACrowsBowProjectile>(OtherActor);
+	if (arrow)
 	{
-		CurHealth -= 3; // TODO config
+		CurHealth -= arrow->DamageValue;
+	}
+	else if(OtherComp->ComponentHasTag("Sword") && OtherComp->IsVisible())
+	{
+		CurHealth -= 1; // TODO config
 	}
 
 	HealthBar->UpdateHealthPercentage(CurHealth / MaxHealth);

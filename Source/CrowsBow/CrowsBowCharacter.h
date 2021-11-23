@@ -77,6 +77,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Weapon)
 	UMeshComponent* SwordMeshComp;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bGameOver;
+
 protected:
 	virtual void BeginPlay() override;
 
