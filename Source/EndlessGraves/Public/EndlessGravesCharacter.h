@@ -63,6 +63,9 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AI)
+	class UPawnNoiseEmitterComponent* NoiseEmitterComponent;
+
 public:	
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

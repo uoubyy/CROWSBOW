@@ -28,3 +28,21 @@ void AEndlessGravesFireBall::BeginPlay()
 	Super::BeginPlay();
 	SetActorHiddenInGame(true);
 }
+
+void AEndlessGravesFireBall::Active(FVector direction)
+{
+	SetActorHiddenInGame(false);
+	ParticleSystemComponent->SetActive(true);
+
+	UProjectileMovementComponent* projectileComp = GetProjectileMovement();
+	GetProjectileMovement()->Velocity = direction * 1000.0f;
+	projectileComp->Activate(true);
+
+	GetWorldTimerManager().SetTimer(DeActiveTimerHandle, this, &AEndlessGravesFireBall::DeActive, 1.0f, false);
+}
+
+void AEndlessGravesFireBall::DeActive()
+{
+	SetActorHiddenInGame(true);
+	ParticleSystemComponent->SetActive(false);
+}

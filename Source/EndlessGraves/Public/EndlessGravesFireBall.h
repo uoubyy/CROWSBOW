@@ -23,6 +23,14 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	class UParticleSystemComponent* ParticleSystemComponent;
 
+	UFUNCTION(BlueprintCallable, Category = FireBall)
+	void Active(FVector direction);
+
+	UFUNCTION(BlueprintCallable, Category = FireBall)
+	void DeActive();
+
 protected:
 	virtual void BeginPlay() override;
+
+	FTimerHandle DeActiveTimerHandle;
 };
