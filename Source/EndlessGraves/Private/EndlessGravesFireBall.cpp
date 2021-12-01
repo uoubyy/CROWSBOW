@@ -13,7 +13,7 @@ AEndlessGravesFireBall::AEndlessGravesFireBall()
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
 	SphereComponent->InitSphereRadius(50.0f);
 	SphereComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
-	SphereComponent->SetupAttachment(RootScene);
+	SphereComponent->AttachToComponent(RootScene, FAttachmentTransformRules::KeepRelativeTransform);
 	SphereComponent->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 
 	// ParticleSystemComponent initialization
@@ -27,12 +27,16 @@ void AEndlessGravesFireBall::BeginPlay()
 {
 	Super::BeginPlay();
 	SetActorHiddenInGame(true);
+
+	SphereComponent->OnComponentHit.AddDynamic(this, &AEndlessGravesFireBall::OnHit);
 }
 
-void AEndlessGravesFireBall::Active(FVector direction)
+void AEndlessGravesFireBall::Active(FVector location, FVector direction)
 {
+	SetActorLocation(location);
 	SetActorHiddenInGame(false);
 	ParticleSystemComponent->SetActive(true);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
 	UProjectileMovementComponent* projectileComp = GetProjectileMovement();
 	GetProjectileMovement()->Velocity = direction * 1000.0f;
@@ -45,4 +49,10 @@ void AEndlessGravesFireBall::DeActive()
 {
 	SetActorHiddenInGame(true);
 	ParticleSystemComponent->SetActive(false);
+	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AEndlessGravesFireBall::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	DeActive();
 }

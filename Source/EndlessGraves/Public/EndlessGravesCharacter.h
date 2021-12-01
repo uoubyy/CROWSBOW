@@ -120,8 +120,15 @@ public:
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
 	UFUNCTION(BlueprintCallable)
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION(BlueprintCallable)
 	void SwitchWeapon();
 
 	UFUNCTION(BlueprintCallable)
 	void SwitchWeaponTo(EWeaponType weaponType);
+
+private:
+	UFUNCTION()
+	void UpdateHUD();
 };

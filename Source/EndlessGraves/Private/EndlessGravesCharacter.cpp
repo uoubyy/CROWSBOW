@@ -5,12 +5,16 @@
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 
+#include "GenericPlatform/GenericPlatformMath.h"
+
 #include "EndlessGravesCharacterInfoWidget.h"
 #include "EndlessGravesProjectile.h"
+#include "EndlessGravesWeaponInterface.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -62,6 +66,8 @@ void AEndlessGravesCharacter::BeginPlay()
 		HUDInfoWidget = Cast<UEndlessGravesCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
 	if(HUDInfoWidget->IsInViewport() == false)
 		HUDInfoWidget->AddToViewport();
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEndlessGravesCharacter::OnHit);
 }
 
 // Called to bind functionality to input
@@ -161,10 +167,13 @@ void AEndlessGravesCharacter::OnFireArrow()
 
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
-			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;// ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
 
 			// spawn the projectile at the muzzle
-			World->SpawnActor<AEndlessGravesProjectile>(ArrowClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			AEndlessGravesProjectile* arrow = World->SpawnActor<AEndlessGravesProjectile>(ArrowClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+
+			if(arrow == nullptr)
+				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("EndlessGravesCharacter::OnFireArrow failed"));
 		}
 	}
 }
@@ -194,4 +203,32 @@ void AEndlessGravesCharacter::WeaponResume()
 
 		HUDInfoWidget->UpdateArrowCD(CurArrowNum);
 	}
+}
+
+void AEndlessGravesCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+{
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnHit %s"), *(OtherActor->GetName())));
+
+	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+	if (Weapon)
+	{
+		CurHealth -= Weapon->GetDamage();
+
+		//FVector randomVector;
+		//randomVector.X = FMath::FRandRange(-1.0f, 1.0f);
+		//randomVector.Y = FMath::FRandRange(-1.0f, 1.0f);
+		//randomVector.Z = FMath::FRandRange(0.0f, 1.0f);
+		//randomVector.Normalize();
+		//GetMesh()->AddImpulse(randomVector * 10000 * GetMesh()->GetMass());
+	}
+
+	UpdateHUD();
+}
+
+void AEndlessGravesCharacter::UpdateHUD()
+{
+	ensure(HUDInfoWidget != nullptr);
+
+	int curLife = FGenericPlatformMath::CeilToInt(CurHealth / MaxHealth * 3);
+	HUDInfoWidget->UpdateLifeStatus(curLife, CurHealth / MaxHealth);
 }

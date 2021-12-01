@@ -86,6 +86,10 @@ void AEndlessGravesAICharacter::TurnToSenseActor()
 {
 	FVector direction = SensedLocation - GetActorLocation();
 	direction.Normalize();
+	FRotator rotation = direction.Rotation();
+	rotation.Roll = 0.0f;
+	rotation.Pitch = 0.0f; // only rotation around the Z axis
+
 	SetActorRotation(FMath::Lerp(GetActorRotation(), direction.Rotation(), 0.05f));
 
 	if (PawnSensingComp->CanSenseAnything() == false)
@@ -95,3 +99,8 @@ void AEndlessGravesAICharacter::TurnToSenseActor()
 	}
 }
 
+void AEndlessGravesAICharacter::UpdateAIHUD()
+{
+	ensure(HealthBar != nullptr);
+	HealthBar->SetHealthPercentage(CurHealth / MaxHealth);
+}

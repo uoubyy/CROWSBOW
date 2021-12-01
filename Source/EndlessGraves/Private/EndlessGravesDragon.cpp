@@ -22,11 +22,13 @@ void AEndlessGravesDragon::BeginPlay()
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AEndlessGravesDragon::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AEndlessGravesDragon::OnNoiseHeard);
+
+	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesDragon::OnBeginOverlap);
 }
 
 void AEndlessGravesDragon::OnPawnSeen(APawn* SeenPawn)
 {
-	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+	// DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 
 	Super::OnPawnSeen(SeenPawn);
 
@@ -42,12 +44,17 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 {
 	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
-	DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
+	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
+
+	// TODO fix unseen bug
+	OnPawnSeen(HeardPawn);
 }
 
 void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 {
+	ensure(FireBallClass != nullptr);
 	FVector direction = PlayerLocation - GetActorLocation();
+	const FVector SocketLocation = SkeletalMeshComp->GetSocketLocation("Bone_002");
 	direction.Normalize();
 
 	if (FireBallActor == nullptr)
@@ -58,11 +65,22 @@ void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-			const FVector SocketLocation = SkeletalMeshComp->GetSocketLocation("Bone_002");
+			
 			FRotator spawnRotation = FRotationMatrix::MakeFromX(direction).Rotator();
 			FireBallActor = World->SpawnActor<AEndlessGravesFireBall>(FireBallClass, SocketLocation, spawnRotation, ActorSpawnParams);
 		}
 	}
 
-	FireBallActor->Active(direction);
+	FireBallActor->Active(SocketLocation, direction);
+}
+
+void AEndlessGravesDragon::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon::OnBeginOverlap %s"), *(OtherActor->GetName())));
+
+	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+	if (Weapon)
+		CurHealth -= Weapon->GetDamage();
+
+	UpdateAIHUD();
 }

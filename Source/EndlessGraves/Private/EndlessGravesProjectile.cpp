@@ -22,6 +22,8 @@ AEndlessGravesProjectile::AEndlessGravesProjectile()
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
 	ProjectileMovement->bAutoActivate = true;// false;
+
+	//InitialLifeSpan = 5.0f;
 }
 
 // Called when the game starts or when spawned
@@ -32,5 +34,10 @@ void AEndlessGravesProjectile::BeginPlay()
 
 void AEndlessGravesProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	//Destroy();
+	Destroy();
+}
+
+void AEndlessGravesProjectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
 }
