@@ -17,13 +17,16 @@ class ENDLESSGRAVES_API AEndlessGravesPlayerController : public APlayerControlle
 protected:
 	virtual void SetupInputComponent() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, Category = UI)
 	TSubclassOf<UUserWidget> PauseMenuClass;
 
 	UPROPERTY(BlueprintReadWrite, Category = UI)
 	class UUserWidget* PauseMenuInstance;
 
-private:
+	UPROPERTY(EditDefaultsOnly, Category = PowerUp)
+	TSubclassOf<class AEndlessGravesExtraHealth> ExtraHealthClass;
+
+public:
 	UFUNCTION(BlueprintCallable)
 	void OnPauseGame();
 
@@ -32,4 +35,7 @@ private:
 
 	UFUNCTION(BlueprintCallable)
 	void OnRestartGame();
+
+	UFUNCTION(BlueprintCallable, Category = Twitch)
+		void SpawnExtraHealthPowerUp();
 };

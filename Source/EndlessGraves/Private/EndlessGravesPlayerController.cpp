@@ -4,12 +4,14 @@
 #include "EndlessGravesPlayerController.h"
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
+#include "EndlessGravesExtraHealth.h"
 
 void AEndlessGravesPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
 	InputComponent->BindAction("Pause", IE_Pressed, this, &AEndlessGravesPlayerController::OnPauseGame);
+	InputComponent->BindAction("PowerUpHealth", IE_Pressed, this, &AEndlessGravesPlayerController::SpawnExtraHealthPowerUp);
 }
 
 void AEndlessGravesPlayerController::OnPauseGame()
@@ -54,4 +56,21 @@ void AEndlessGravesPlayerController::OnResumeGame()
 void AEndlessGravesPlayerController::OnRestartGame()
 {
 
+}
+
+void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
+{
+	FVector CharacterLocation = GetPawn()->GetActorLocation();
+	FVector ForwardDirection = GetPawn()->GetActorForwardVector();
+	FVector PowerUpSpawnLocation = CharacterLocation + ForwardDirection * 200.0f;
+	PowerUpSpawnLocation.Z += 100.0f;
+
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;// ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		AEndlessGravesExtraHealth* HealthPowerUp = World->SpawnActor<AEndlessGravesExtraHealth>(ExtraHealthClass, PowerUpSpawnLocation, FRotator::ZeroRotator, ActorSpawnParams);
+	}
 }

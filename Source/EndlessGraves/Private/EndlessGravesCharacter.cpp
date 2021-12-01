@@ -15,6 +15,7 @@
 #include "EndlessGravesCharacterInfoWidget.h"
 #include "EndlessGravesProjectile.h"
 #include "EndlessGravesWeaponInterface.h"
+#include "EndlessGravesExtraHealth.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -68,6 +69,7 @@ void AEndlessGravesCharacter::BeginPlay()
 		HUDInfoWidget->AddToViewport();
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEndlessGravesCharacter::OnHit);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnBeginOverlap);
 }
 
 // Called to bind functionality to input
@@ -225,8 +227,33 @@ void AEndlessGravesCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 	UpdateHUD();
 }
 
+void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnBeginOverlap %s"), *(OtherActor->GetName())));
+
+	IEndlessGravesPowerUpInterface* PowerUp = Cast<IEndlessGravesPowerUpInterface>(OtherActor);
+	if (PowerUp)
+	{
+		EPowerUpType PowerUpType = PowerUp->GetPowerUpType();
+		switch (PowerUpType)
+		{
+		case EPowerUpType::POWERUP_ADDHEALTH:
+			CurHealth += PowerUp->GetPowerUpEffectValue();
+			break;
+		case EPowerUpType::POWERUP_NONE:
+			break;
+		default:
+			break;
+		}
+	}
+
+	UpdateHUD();
+}
+
 void AEndlessGravesCharacter::UpdateHUD()
 {
+	CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
+
 	ensure(HUDInfoWidget != nullptr);
 
 	int curLife = FGenericPlatformMath::CeilToInt(CurHealth / MaxHealth * 3);
