@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "EndlessGravesCustomEnum.h"
 #include "EndlessGravesCharacter.generated.h"
 
 class USceneComponent;
@@ -63,8 +65,50 @@ protected:
 	 */
 	void LookUpAtRate(float Rate);
 
+	UFUNCTION()
+	void StartAttack();
+
+	UFUNCTION()
+	/** Fires a projectile. */
+	void OnFireArrow();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSlashSword();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AI)
 	class UPawnNoiseEmitterComponent* NoiseEmitterComponent;
+
+	UPROPERTY(EditDefaultsOnly, Category = Health)
+	float MaxHealth = 600.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = Health)
+	float CurHealth;
+
+	UPROPERTY(EditDefaultsOnly, Category = Ability)
+	int MaxArrowNum = 3;
+
+	UPROPERTY(VisibleAnywhere, Category = Ability)
+	int CurArrowNum;
+
+	UPROPERTY(VisibleAnywhere, Category = Weapon)
+	EWeaponType CurWeapon;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	float WeaponResumeInterval = 1.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	TSubclassOf<class AEndlessGravesProjectile> ArrowClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = HUD)
+	TSubclassOf<class UEndlessGravesCharacterInfoWidget> HUDInfoWidgetClass;
+
+	UPROPERTY()
+	class UEndlessGravesCharacterInfoWidget* HUDInfoWidget;
+
+	UFUNCTION()
+	void WeaponResume();
+
+	FTimerHandle WeaponResumeHandler;
 
 public:	
 	// Called to bind functionality to input
@@ -75,4 +119,9 @@ public:
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
+	UFUNCTION(BlueprintCallable)
+	void SwitchWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	void SwitchWeaponTo(EWeaponType weaponType);
 };

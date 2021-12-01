@@ -21,7 +21,7 @@ AEndlessGravesProjectile::AEndlessGravesProjectile()
 	ProjectileMovement->MaxSpeed = 1000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
-	ProjectileMovement->bAutoActivate = false;
+	ProjectileMovement->bAutoActivate = true;// false;
 }
 
 // Called when the game starts or when spawned
@@ -32,5 +32,5 @@ void AEndlessGravesProjectile::BeginPlay()
 
 void AEndlessGravesProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	Destroy();
+	//Destroy();
 }

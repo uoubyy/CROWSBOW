@@ -3,12 +3,14 @@
 
 #include "EndlessGravesCharacter.h"
 #include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "Components/PawnNoiseEmitterComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+
+#include "EndlessGravesCharacterInfoWidget.h"
+#include "EndlessGravesProjectile.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -44,13 +46,22 @@ AEndlessGravesCharacter::AEndlessGravesCharacter()
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
 	NoiseEmitterComponent = CreateDefaultSubobject<UPawnNoiseEmitterComponent>(TEXT("NoiseEmitter"));
+
+	CurHealth = MaxHealth;
+	CurArrowNum = MaxArrowNum;
+
+	CurWeapon = EWeaponType::WEAPON_ARROW;
 }
 
 // Called when the game starts or when spawned
 void AEndlessGravesCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (HUDInfoWidget == nullptr)
+		HUDInfoWidget = Cast<UEndlessGravesCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
+	if(HUDInfoWidget->IsInViewport() == false)
+		HUDInfoWidget->AddToViewport();
 }
 
 // Called to bind functionality to input
@@ -72,6 +83,11 @@ void AEndlessGravesCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	PlayerInputComponent->BindAxis("TurnRate", this, &AEndlessGravesCharacter::TurnAtRate);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis("LookUpRate", this, &AEndlessGravesCharacter::LookUpAtRate);
+
+	// Bind fire event
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AEndlessGravesCharacter::StartAttack);
+	// Bind switch weapon event
+	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AEndlessGravesCharacter::SwitchWeapon);
 }
 
 void AEndlessGravesCharacter::TurnAtRate(float Rate)
@@ -112,5 +128,70 @@ void AEndlessGravesCharacter::MoveRight(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
+	}
+}
+
+void AEndlessGravesCharacter::StartAttack()
+{
+	if (CurWeapon == EWeaponType::WEAPON_SWORD)
+		OnSlashSword();
+	else
+		OnFireArrow();
+}
+
+void AEndlessGravesCharacter::OnFireArrow()
+{
+	if (CurArrowNum <= 0 || HUDInfoWidget == nullptr)
+		return;
+
+	CurArrowNum--;
+	HUDInfoWidget->UpdateArrowCD(CurArrowNum);
+
+	if(GetWorldTimerManager().IsTimerActive(WeaponResumeHandler) == false || GetWorldTimerManager().IsTimerPaused(WeaponResumeHandler))
+		GetWorldTimerManager().SetTimer(WeaponResumeHandler, this, &AEndlessGravesCharacter::WeaponResume, WeaponResumeInterval, true);
+
+	if (ArrowClass != nullptr)
+	{
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			const FRotator SpawnRotation = GetActorRotation();
+			// MuzzleOffset is in camera space, so transform it to world space before offsetting from the character location to find the final muzzle position
+			const FVector SpawnLocation = ((ArrowSpawnLocation != nullptr) ? ArrowSpawnLocation->GetComponentLocation() : GetActorLocation());// +SpawnRotation.RotateVector(ArrowOffset);
+
+			//Set Spawn Collision Handling Override
+			FActorSpawnParameters ActorSpawnParams;
+			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+
+			// spawn the projectile at the muzzle
+			World->SpawnActor<AEndlessGravesProjectile>(ArrowClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+		}
+	}
+}
+
+void AEndlessGravesCharacter::SwitchWeapon()
+{
+	if (CurWeapon == EWeaponType::WEAPON_ARROW)
+		SwitchWeaponTo(EWeaponType::WEAPON_SWORD);
+	else
+		SwitchWeaponTo(EWeaponType::WEAPON_ARROW);
+}
+
+void AEndlessGravesCharacter::SwitchWeaponTo(EWeaponType weaponType)
+{
+	CurWeapon = weaponType;
+	HUDInfoWidget->SwitchWeapon(CurWeapon);
+}
+
+void AEndlessGravesCharacter::WeaponResume()
+{
+	if(CurWeapon == EWeaponType::WEAPON_ARROW && CurArrowNum < MaxArrowNum)
+	{
+		CurArrowNum++;
+
+		if (CurArrowNum >= MaxArrowNum)
+			GetWorldTimerManager().PauseTimer(WeaponResumeHandler);
+
+		HUDInfoWidget->UpdateArrowCD(CurArrowNum);
 	}
 }
