@@ -30,6 +30,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* MeshComponent;
 
+	UPROPERTY(EditDefaultsOnly, Category = Damage)
+	float Damage;
+
 public:	
 
 	virtual float GetDamage() const override;

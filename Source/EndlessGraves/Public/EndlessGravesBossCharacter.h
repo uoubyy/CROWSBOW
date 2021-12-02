@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "EndlessGravesAICharacter.h"
 #include "EndlessGravesBossCharacter.generated.h"
 
 UCLASS()
-class ENDLESSGRAVES_API AEndlessGravesBossCharacter : public ACharacter
+class ENDLESSGRAVES_API AEndlessGravesBossCharacter : public AEndlessGravesAICharacter
 {
 	GENERATED_BODY()
 
@@ -19,11 +19,11 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void OnPawnSeen(APawn* SeenPawn) override;
 
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume) override;
 
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+	virtual void TurnToSenseActor() override;
 };

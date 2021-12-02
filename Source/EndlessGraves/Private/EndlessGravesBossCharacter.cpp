@@ -2,12 +2,15 @@
 
 
 #include "EndlessGravesBossCharacter.h"
+#include "EndlessGravesWeaponInterface.h"
+#include "Perception/PawnSensingComponent.h"
+#include "Components/CapsuleComponent.h"
 
 // Sets default values
 AEndlessGravesBossCharacter::AEndlessGravesBossCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	// PrimaryActorTick.bCanEverTick = true;
 
 }
 
@@ -15,20 +18,43 @@ AEndlessGravesBossCharacter::AEndlessGravesBossCharacter()
 void AEndlessGravesBossCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	PawnSensingComp->OnSeePawn.AddDynamic(this, &AEndlessGravesBossCharacter::OnPawnSeen);
+	PawnSensingComp->OnHearNoise.AddDynamic(this, &AEndlessGravesBossCharacter::OnNoiseHeard);
+	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesBossCharacter::OnBeginOverlap);
 }
 
-// Called every frame
-void AEndlessGravesBossCharacter::Tick(float DeltaTime)
+void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
 {
-	Super::Tick(DeltaTime);
-
+	Super::OnPawnSeen(SeenPawn);
 }
 
-// Called to bind functionality to input
-void AEndlessGravesBossCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AEndlessGravesBossCharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
+	// TODO debug
+	OnPawnSeen(HeardPawn);
 }
 
+void AEndlessGravesBossCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+	if (Weapon)
+	{
+		CurHealth -= Weapon->GetDamage() * 0.3f;
+	}
+
+	UpdateAIHUD();
+}
+
+void AEndlessGravesBossCharacter::TurnToSenseActor()
+{
+	FVector direction = SensedLocation - GetActorLocation();
+	direction.Normalize();
+	FRotator rotation = direction.Rotation();
+	rotation.Roll = 0.0f;
+	rotation.Pitch = 0.0f; // only rotation around the Z axis
+
+	FName boneName("Head_M");
+	//GetMesh()->SetBoneRotationByName(boneName, r, EBoneSpaces::ComponentSpace);
+}

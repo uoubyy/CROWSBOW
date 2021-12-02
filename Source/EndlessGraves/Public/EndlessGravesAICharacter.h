@@ -68,9 +68,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
 	EEnemyState CurEnemyState;
 
-private:
 	FTimerHandle TurningTimerHandle;
 
 	UFUNCTION()
-	void TurnToSenseActor();
+	virtual void TurnToSenseActor();
 };

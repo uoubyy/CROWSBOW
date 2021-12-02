@@ -116,6 +116,14 @@ void AEndlessGravesCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AEndlessGravesCharacter::SwitchWeapon);
 
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AEndlessGravesCharacter::DashForward);
+
+	PlayerInputComponent->BindAction<FOpenYawDelegate>("OpenYawController", IE_Pressed, this, &AEndlessGravesCharacter::OpenPlayerYawController, true);
+	PlayerInputComponent->BindAction<FOpenYawDelegate>("OpenYawController", IE_Released, this, &AEndlessGravesCharacter::OpenPlayerYawController, false);
+}
+
+void AEndlessGravesCharacter::OpenPlayerYawController(bool value)
+{
+	bUseControllerRotationYaw = value;
 }
 
 void AEndlessGravesCharacter::TurnAtRate(float Rate)
