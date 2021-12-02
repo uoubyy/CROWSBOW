@@ -74,6 +74,7 @@ void AEndlessGravesCharacter::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEndlessGravesCharacter::OnHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnExitOverlap);
 
 	if (SwordClass != nullptr)
 	{
@@ -88,7 +89,7 @@ void AEndlessGravesCharacter::BeginPlay()
 		}
 	}
 
-	SwordActor->SetActorHiddenInGame(CurWeapon != EWeaponType::WEAPON_SWORD);
+	SwordActor->ActiveSword(CurWeapon == EWeaponType::WEAPON_SWORD);
 }
 
 // Called to bind functionality to input
@@ -97,8 +98,6 @@ void AEndlessGravesCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	//Super::SetupPlayerInputComponent(PlayerInputComponent);
 	// Set up gameplay key bindings
 	check(PlayerInputComponent);
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AEndlessGravesCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AEndlessGravesCharacter::MoveRight);
@@ -115,6 +114,8 @@ void AEndlessGravesCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AEndlessGravesCharacter::StartAttack);
 	// Bind switch weapon event
 	PlayerInputComponent->BindAction("SwitchWeapon", IE_Pressed, this, &AEndlessGravesCharacter::SwitchWeapon);
+
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AEndlessGravesCharacter::DashForward);
 }
 
 void AEndlessGravesCharacter::TurnAtRate(float Rate)
@@ -141,6 +142,21 @@ void AEndlessGravesCharacter::MoveForward(float Value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AEndlessGravesCharacter::DashForward()
+{
+	FVector LaunchVeolocity = GetActorForwardVector() * 3000.0f;
+	LaunchCharacter(LaunchVeolocity, true, false);
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+
+	GetWorldTimerManager().SetTimer(DashEffectTimeHandle, this, &AEndlessGravesCharacter::DashEffectExit, 0.5f, false);
+}
+
+void AEndlessGravesCharacter::DashEffectExit()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 
 void AEndlessGravesCharacter::MoveRight(float Value)
@@ -221,7 +237,7 @@ void AEndlessGravesCharacter::SwitchWeaponTo(EWeaponType weaponType)
 	CurWeapon = weaponType;
 	HUDInfoWidget->SwitchWeapon(CurWeapon);
 
-	SwordActor->SetActorHiddenInGame(CurWeapon != EWeaponType::WEAPON_SWORD);
+	SwordActor->ActiveSword(CurWeapon == EWeaponType::WEAPON_SWORD);
 }
 
 void AEndlessGravesCharacter::WeaponResume()
@@ -245,13 +261,6 @@ void AEndlessGravesCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherA
 	if (Weapon)
 	{
 		CurHealth -= Weapon->GetDamage();
-
-		//FVector randomVector;
-		//randomVector.X = FMath::FRandRange(-1.0f, 1.0f);
-		//randomVector.Y = FMath::FRandRange(-1.0f, 1.0f);
-		//randomVector.Z = FMath::FRandRange(0.0f, 1.0f);
-		//randomVector.Normalize();
-		//GetMesh()->AddImpulse(randomVector * 10000 * GetMesh()->GetMass());
 	}
 
 	UpdateHUD();
@@ -276,7 +285,60 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 			break;
 		}
 	}
+	else
+	{
+		IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+		//FString weaponTypeName;
+		//GetEnumValueAsString< EDamageType>(weaponTypeName, Weapon->GetDamageType());
+		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnBeginOverlap %s"), *(weaponTypeName)));
 
+		if (Weapon)
+		{
+			switch (Weapon->GetDamageType())
+			{
+			case EDamageType::EDT_Constant:
+				ConstantDamageCount++;
+				if (ConstantDamageCount == 1)
+				{
+					ConstantDamageDel.BindUFunction(this, FName("ConstantDamage"), Weapon->GetDamage());
+					GetWorldTimerManager().SetTimer(ConstantDamageTimeHandle, ConstantDamageDel, 0.5f, true);
+				}
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	UpdateHUD();
+}
+
+void AEndlessGravesCharacter::OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter OnExitOverlap %s"), *(OtherActor->GetName())));
+
+	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+	if (Weapon)
+	{
+		switch (Weapon->GetDamageType())
+		{
+		case EDamageType::EDT_Constant:
+			ConstantDamageCount--; // No overlap stay event, maintain it by ourself
+			if (ConstantDamageCount <= 0)
+			{
+				GetWorldTimerManager().ClearTimer(ConstantDamageTimeHandle);
+			}
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+
+void AEndlessGravesCharacter::ConstantDamage(float Damage)
+{
+	CurHealth -= Damage;
 	UpdateHUD();
 }
 

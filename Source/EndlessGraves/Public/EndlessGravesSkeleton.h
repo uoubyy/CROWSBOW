@@ -4,18 +4,24 @@
 
 #include "CoreMinimal.h"
 #include "EndlessGravesAICharacter.h"
+#include "EndlessGravesCustomEnum.h"
+#include "EndlessGravesWeaponInterface.h"
 #include "EndlessGravesSkeleton.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ENDLESSGRAVES_API AEndlessGravesSkeleton : public AEndlessGravesAICharacter
+class ENDLESSGRAVES_API AEndlessGravesSkeleton : public AEndlessGravesAICharacter, public IEndlessGravesWeaponInterface
 {
 	GENERATED_BODY()
 
 public:
 	AEndlessGravesSkeleton();
+
+	virtual float GetDamage() const override { return 10.0f; }
+
+	virtual EDamageType GetDamageType() const override { return EDamageType::EDT_OneTime; }
 	
 protected:
 
@@ -35,7 +41,7 @@ protected:
 	float ChaseSpeed = 100.0f;
 
 	UPROPERTY(EditDefaultsOnly, Category = Ability)
-	float MaxAttackDistance = 100.0f;
+	float MaxAttackDistance = 150.0f;
 
 private:
 

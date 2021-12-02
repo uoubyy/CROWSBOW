@@ -29,12 +29,23 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 	Super::OnPawnSeen(SeenPawn);
 
 	TargetDirection = SensedLocation - GetActorLocation();
-	TargetDirection.Normalize();
+	float Distance = TargetDirection.Size();
 
-	CurEnemyState = EEnemyState::ES_Running;
-	AEndlessGravesAIController* AIController = Cast<AEndlessGravesAIController>(GetController());
-	if (AIController)
-		AIController->ChasingPlayer(SensedLocation);
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesSkeleton OnPawnSeen %f"), Distance));
+
+	if (Distance <= MaxAttackDistance)
+	{
+		CurEnemyState = EEnemyState::ES_Attack;
+	}
+	else
+	{
+		CurEnemyState = EEnemyState::ES_Running;
+		AEndlessGravesAIController* AIController = Cast<AEndlessGravesAIController>(GetController());
+		if (AIController)
+			AIController->ChasingPlayer(SensedLocation);
+	}
+
+	TargetDirection.Normalize();
 }
 
 void AEndlessGravesSkeleton::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
@@ -56,7 +67,11 @@ void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 
 	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
 	if (Weapon)
+	{
 		CurHealth -= Weapon->GetDamage();
+		FVector LaunchVeolocity = GetActorForwardVector() * -5000.0f;
+		LaunchCharacter(LaunchVeolocity, true, false);
+	}
 
 	UpdateAIHUD();
 }

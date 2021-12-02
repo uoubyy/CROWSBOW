@@ -41,3 +41,9 @@ void AEndlessGravesWeaponSword::OnBeginOverlap(UPrimitiveComponent* OverlappedCo
 {
 
 }
+
+void AEndlessGravesWeaponSword::ActiveSword(bool enable)
+{
+	SetActorHiddenInGame(!enable);
+	CapsuleComponent->SetCollisionEnabled(enable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+}

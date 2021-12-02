@@ -22,6 +22,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = AIController)
 	void ChasingPlayer(FVector Location);
 
+	UFUNCTION(BlueprintCallable, Category = AIController)
+	void RandomMovement(FVector Location);
+
 	//UFUNCTION(BlueprintCallable, Category = AIController)
 	//void 
 };

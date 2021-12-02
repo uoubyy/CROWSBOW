@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-
+#include "EndlessGravesCustomEnum.h"
 #include "EndlessGravesWeaponInterface.generated.h"
 
 // This class does not need to be modified.
@@ -25,4 +25,6 @@ class ENDLESSGRAVES_API IEndlessGravesWeaponInterface
 public:
 
 	virtual float GetDamage() const { return 0.0f; }
+
+	virtual EDamageType GetDamageType() const { return EDamageType::EDT_OneTime; }
 };
