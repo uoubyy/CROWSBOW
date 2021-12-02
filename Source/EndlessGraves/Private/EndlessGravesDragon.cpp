@@ -3,7 +3,6 @@
 
 #include "EndlessGravesDragon.h"
 #include "Components/CapsuleComponent.h"
-#include "Components/SkeletalMeshComponent.h"
 #include "Perception/PawnSensingComponent.h"
 
 #include "EndlessGravesFireBall.h"

@@ -105,4 +105,7 @@ void AEndlessGravesAICharacter::UpdateAIHUD()
 {
 	ensure(HealthBar != nullptr);
 	HealthBar->SetHealthPercentage(CurHealth / MaxHealth);
+
+	if (CurHealth <= 0)
+		Destroy();
 }

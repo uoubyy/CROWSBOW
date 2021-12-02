@@ -18,7 +18,6 @@ public:
 	AEndlessGravesSkeleton();
 	
 protected:
-	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void BeginPlay() override;
 

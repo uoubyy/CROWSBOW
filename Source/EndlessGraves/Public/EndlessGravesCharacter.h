@@ -111,8 +111,11 @@ protected:
 	UPROPERTY()
 	class AEndlessGravesWeaponSword* SwordActor;
 
-	//UPROPERTY(EditDefaultsOnly, Category = Weapon)
-	//class UAnimMontage* SlashSwordAnimMontage;
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	class UAnimMontage* SlashSwordAnimMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	class UAnimMontage* ShootArrowAnimMontage;
 
 	UFUNCTION()
 	void WeaponResume();

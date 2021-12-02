@@ -6,12 +6,12 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "EndlessGravesWeaponInterface.h"
+#include "EndlessGravesAIController.h"
 
 #include "Kismet/KismetMathLibrary.h"
 
 AEndlessGravesSkeleton::AEndlessGravesSkeleton()
 {
-	PrimaryActorTick.bCanEverTick = true;
 }
 
 void AEndlessGravesSkeleton::BeginPlay()
@@ -24,16 +24,6 @@ void AEndlessGravesSkeleton::BeginPlay()
 	//CapsuleComp->OnComponentEndOverlap.AddDynamic(this, &AEndlessGravesSkeleton::OnExitOverlap);
 }
 
-void AEndlessGravesSkeleton::Tick(float DeltaSeconds)
-{
-	if (CurEnemyState == EEnemyState::ES_Running)
-	{
-		FVector newPos = UKismetMathLibrary::VInterpTo(GetActorLocation(), SensedLocation - TargetDirection * MaxAttackDistance, DeltaSeconds, DeltaSeconds * ChaseSpeed);
-		newPos.Z = GetActorLocation().Z;
-		SetActorLocation(newPos);
-	}
-}
-
 void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 {
 	Super::OnPawnSeen(SeenPawn);
@@ -42,6 +32,9 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 	TargetDirection.Normalize();
 
 	CurEnemyState = EEnemyState::ES_Running;
+	AEndlessGravesAIController* AIController = Cast<AEndlessGravesAIController>(GetController());
+	if (AIController)
+		AIController->ChasingPlayer(SensedLocation);
 }
 
 void AEndlessGravesSkeleton::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)

@@ -12,7 +12,7 @@
 
 #include "GenericPlatform/GenericPlatformMath.h"
 
-//#include "Animation/AnimInstance.h"
+#include "Animation/AnimInstance.h"
 
 #include "EndlessGravesCharacterInfoWidget.h"
 #include "EndlessGravesProjectile.h"
@@ -87,6 +87,8 @@ void AEndlessGravesCharacter::BeginPlay()
 			SwordActor->SetActorRelativeLocation(FVector::ZeroVector);
 		}
 	}
+
+	SwordActor->SetActorHiddenInGame(CurWeapon != EWeaponType::WEAPON_SWORD);
 }
 
 // Called to bind functionality to input
@@ -160,13 +162,17 @@ void AEndlessGravesCharacter::StartAttack()
 {
 	if (CurWeapon == EWeaponType::WEAPON_SWORD)
 	{
-		OnSlashSword();
-		//UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		//int result = AnimInstance->Montage_Play(SlashSwordAnimMontage);
-		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Montage Play Result %d"), result));
+		//OnSlashSword();
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if(AnimInstance->Montage_IsPlaying(SlashSwordAnimMontage) == false)
+			AnimInstance->Montage_Play(SlashSwordAnimMontage);
 	}
 	else
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(ShootArrowAnimMontage);
 		OnFireArrow();
+	}
 }
 
 void AEndlessGravesCharacter::OnFireArrow()
@@ -214,6 +220,8 @@ void AEndlessGravesCharacter::SwitchWeaponTo(EWeaponType weaponType)
 {
 	CurWeapon = weaponType;
 	HUDInfoWidget->SwitchWeapon(CurWeapon);
+
+	SwordActor->SetActorHiddenInGame(CurWeapon != EWeaponType::WEAPON_SWORD);
 }
 
 void AEndlessGravesCharacter::WeaponResume()
