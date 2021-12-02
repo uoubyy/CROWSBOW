@@ -31,13 +31,20 @@ enum class EEnemyState : uint8
 	ES_None		UMETA(DisplayName = "None")
 };
 
-
 UENUM(BlueprintType)
 enum class EDamageType : uint8
 {
 	EDT_OneTime		UMETA(DisplayName = "One Time Damage"),
 	EDT_Constant	UMETA(DisplayName = "Constant Damage"),
 	EDT_None		UMETA(DisplayName = "None")
+};
+
+UENUM(BlueprintType)
+enum class EEnemyType : uint8
+{
+	EET_Skeleton	UMETA(DisplayName = "Enemy Skeleton"),
+	EET_Dragon		UMETA(DisplayName = "Enemy Dragon"),
+	EET_None		UMETA(DisplayName = "None")
 };
 
 template<typename TEnum>

@@ -12,6 +12,7 @@ void AEndlessGravesPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Pause", IE_Pressed, this, &AEndlessGravesPlayerController::OnPauseGame);
 	InputComponent->BindAction("PowerUpHealth", IE_Pressed, this, &AEndlessGravesPlayerController::SpawnExtraHealthPowerUp);
+	// InputComponent->BindAction("SummonEnemy", IE_Pressed, this, &AEndlessGravesPlayerController::SummonEnemy);
 }
 
 void AEndlessGravesPlayerController::OnPauseGame()
@@ -73,4 +74,9 @@ void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 	{
 		AEndlessGravesExtraHealth* HealthPowerUp = World->SpawnActor<AEndlessGravesExtraHealth>(ExtraHealthClass, PowerUpSpawnLocation, FRotator::ZeroRotator, ActorSpawnParams);
 	}
+}
+
+void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
+{
+
 }

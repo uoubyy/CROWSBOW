@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "EndlessGravesCustomEnum.h"
 #include "EndlessGravesPlayerController.generated.h"
 
 /**
@@ -37,5 +38,8 @@ public:
 	void OnRestartGame();
 
 	UFUNCTION(BlueprintCallable, Category = Twitch)
-		void SpawnExtraHealthPowerUp();
+	void SummonEnemy(EEnemyType enemyType, int num);
+
+	UFUNCTION(BlueprintCallable, Category = Twitch)
+	void SpawnExtraHealthPowerUp();
 };
