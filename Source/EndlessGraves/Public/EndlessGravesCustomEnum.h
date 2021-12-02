@@ -17,9 +17,18 @@ enum class EWeaponType : uint8
 UENUM(BlueprintType)
 enum class EPowerUpType : uint8 
 {
-	POWERUP_ADDHEALTH UMETA(DisplayName = "Add Health"),
-	POWERUP_NONE UMETA(DisplayName = "None")
+	POWERUP_ADDHEALTH	UMETA(DisplayName = "Add Health"),
+	POWERUP_NONE		UMETA(DisplayName = "None")
 	// TODO MORE
+};
+
+UENUM(BlueprintType)
+enum class EEnemyState : uint8
+{
+	ES_Idle		UMETA(DisplayName = "Idle"),
+	ES_Running	UMETA(DisplayName = "Running"),
+	ES_Attack	UMETA(DisplayName = "Attack"),
+	ES_None		UMETA(DisplayName = "None")
 };
 
 template<typename TEnum>

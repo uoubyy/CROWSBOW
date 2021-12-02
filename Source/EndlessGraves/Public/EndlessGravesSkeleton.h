@@ -4,20 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "EndlessGravesAICharacter.h"
-#include "EndlessGravesDragon.generated.h"
+#include "EndlessGravesSkeleton.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ENDLESSGRAVES_API AEndlessGravesDragon : public AEndlessGravesAICharacter
+class ENDLESSGRAVES_API AEndlessGravesSkeleton : public AEndlessGravesAICharacter
 {
 	GENERATED_BODY()
 
 public:
-	AEndlessGravesDragon();
+	AEndlessGravesSkeleton();
 	
 protected:
+	virtual void Tick(float DeltaSeconds) override;
+
 	virtual void BeginPlay() override;
 
 	virtual void OnPawnSeen(APawn* SeenPawn) override;
@@ -26,18 +28,17 @@ protected:
 
 	virtual void AttackPlayer(FVector PlayerLocation);
 
-	//virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {}
-
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = Damage)
-	float MaxAttackDistance;
+	//void OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(EditDefaultsOnly, Category = Damage)
-	TSubclassOf<class AEndlessGravesFireBall> FireBallClass;
+	UPROPERTY(VisibleAnywhere, Category = Movement)
+	float ChaseSpeed = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, Category = Ability)
+	float MaxAttackDistance = 100.0f;
 
 private:
 
-	UPROPERTY()
-	class AEndlessGravesFireBall* FireBallActor = nullptr;
+	FVector TargetDirection;
 };

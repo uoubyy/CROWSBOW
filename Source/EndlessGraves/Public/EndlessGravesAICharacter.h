@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EndlessGravesCustomEnum.h"
 #include "EndlessGravesAICharacter.generated.h"
 
 UCLASS()
@@ -18,6 +19,9 @@ public:
 	AEndlessGravesAICharacter();
 
 	const float GetDamage() { return Damage; }
+
+	UFUNCTION(BlueprintCallable, Category = Enemy)
+	EEnemyState GetEnemyState() const { return CurEnemyState; }
 
 protected:
 	// Called when the game starts or when spawned
@@ -67,8 +71,10 @@ protected:
 
 	FVector SensedLocation = FVector::ZeroVector;
 
-private:
+	UPROPERTY(VisibleAnywhere, Category = Enemy)
+	EEnemyState CurEnemyState;
 
+private:
 	FTimerHandle TurningTimerHandle;
 
 	UFUNCTION()
