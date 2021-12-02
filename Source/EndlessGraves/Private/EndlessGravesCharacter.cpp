@@ -12,10 +12,13 @@
 
 #include "GenericPlatform/GenericPlatformMath.h"
 
+//#include "Animation/AnimInstance.h"
+
 #include "EndlessGravesCharacterInfoWidget.h"
 #include "EndlessGravesProjectile.h"
 #include "EndlessGravesWeaponInterface.h"
 #include "EndlessGravesExtraHealth.h"
+#include "EndlessGravesWeaponSword.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -70,6 +73,19 @@ void AEndlessGravesCharacter::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEndlessGravesCharacter::OnHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnBeginOverlap);
+
+	if (SwordClass != nullptr)
+	{
+		UWorld* const World = GetWorld();
+		if (World != nullptr)
+		{
+			FActorSpawnParameters SpawnInfo;
+			SpawnInfo.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+			SwordActor = World->SpawnActor<AEndlessGravesWeaponSword>(SwordClass, FVector::ZeroVector, FRotator::ZeroRotator, SpawnInfo);
+			SwordActor->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("SwordSocket"));
+			SwordActor->SetActorRelativeLocation(FVector::ZeroVector);
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -142,7 +158,12 @@ void AEndlessGravesCharacter::MoveRight(float Value)
 void AEndlessGravesCharacter::StartAttack()
 {
 	if (CurWeapon == EWeaponType::WEAPON_SWORD)
+	{
 		OnSlashSword();
+		//UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		//int result = AnimInstance->Montage_Play(SlashSwordAnimMontage);
+		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Montage Play Result %d"), result));
+	}
 	else
 		OnFireArrow();
 }

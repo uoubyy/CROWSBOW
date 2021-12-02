@@ -105,6 +105,15 @@ protected:
 	UPROPERTY()
 	class UEndlessGravesCharacterInfoWidget* HUDInfoWidget;
 
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	TSubclassOf<class AEndlessGravesWeaponSword> SwordClass;
+
+	UPROPERTY()
+	class AEndlessGravesWeaponSword* SwordActor;
+
+	//UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	//class UAnimMontage* SlashSwordAnimMontage;
+
 	UFUNCTION()
 	void WeaponResume();
 

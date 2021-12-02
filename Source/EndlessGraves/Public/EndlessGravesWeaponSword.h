@@ -21,8 +21,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(VisibleAnywhere)
+	class USceneComponent* RootScene;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCapsuleComponent* CapsuleComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	class UStaticMeshComponent* MeshComponent;
+
 public:	
 
 	virtual float GetDamage() const override;
+
+	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 };
