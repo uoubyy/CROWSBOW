@@ -21,7 +21,7 @@ public:
 
 	virtual float GetDamage() const override { return 10.0f; }
 
-	virtual EDamageType GetDamageType() const override { return EDamageType::EDT_OneTime; }
+	virtual EDamageType GetDamageType() const override { return EDamageType::EDT_Constant; }
 	
 protected:
 

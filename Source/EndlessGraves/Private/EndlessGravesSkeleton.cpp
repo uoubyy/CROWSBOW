@@ -68,8 +68,8 @@ void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
 	if (Weapon)
 	{
-		CurHealth -= Weapon->GetDamage();
-		FVector LaunchVeolocity = GetActorForwardVector() * -5000.0f;
+		CurHealth -= Weapon->GetDamage() * 0.3f;
+		FVector LaunchVeolocity = GetActorForwardVector() * 1000.0f;
 		LaunchCharacter(LaunchVeolocity, true, false);
 	}
 
