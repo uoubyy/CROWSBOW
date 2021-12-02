@@ -20,7 +20,7 @@ void AEndlessGravesSkeleton::BeginPlay()
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AEndlessGravesSkeleton::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AEndlessGravesSkeleton::OnNoiseHeard);
 
-	//CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesSkeleton::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesSkeleton::OnBeginOverlap);
 	//CapsuleComp->OnComponentEndOverlap.AddDynamic(this, &AEndlessGravesSkeleton::OnExitOverlap);
 }
 

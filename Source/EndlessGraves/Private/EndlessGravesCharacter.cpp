@@ -67,9 +67,10 @@ void AEndlessGravesCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	if (HUDInfoWidget == nullptr)
+	{
 		HUDInfoWidget = Cast<UEndlessGravesCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
-	if(HUDInfoWidget->IsInViewport() == false)
-		HUDInfoWidget->AddToViewport();
+		HUDInfoWidget->AddToViewport(100);
+	}
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEndlessGravesCharacter::OnHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnBeginOverlap);

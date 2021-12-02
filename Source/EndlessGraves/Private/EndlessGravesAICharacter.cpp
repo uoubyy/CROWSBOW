@@ -15,13 +15,14 @@ AEndlessGravesAICharacter::AEndlessGravesAICharacter()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	// PrimaryActorTick.bCanEverTick = true;
-	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
-	CapsuleComp->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
-	RootComponent = CapsuleComp;
+	//CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComp"));
+	//CapsuleComp->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	//RootComponent = CapsuleComp;
 
-	SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComp"));
-	SkeletalMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
-	SkeletalMeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	//SkeletalMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComp"));
+	//SkeletalMeshComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	//SkeletalMeshComp->SetCollisionProfileName(UCollisionProfile::NoCollision_ProfileName);
+	//SkeletalMeshComp->SetRelativeLocation(FVector::ZeroVector);
 
 	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>(TEXT("PawnSensingComp"));
 	PawnSensingComp->SetPeripheralVisionAngle(30.0f);

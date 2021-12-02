@@ -12,8 +12,8 @@
 
 AEndlessGravesDragon::AEndlessGravesDragon() : AEndlessGravesAICharacter()
 {
-	CapsuleComp->BodyInstance.bLockXRotation = true;
-	CapsuleComp->BodyInstance.bLockYRotation = true;
+	//CapsuleComp->BodyInstance.bLockXRotation = true;
+	//CapsuleComp->BodyInstance.bLockYRotation = true;
 }
 
 void AEndlessGravesDragon::BeginPlay()
@@ -23,7 +23,7 @@ void AEndlessGravesDragon::BeginPlay()
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AEndlessGravesDragon::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AEndlessGravesDragon::OnNoiseHeard);
 
-	CapsuleComp->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesDragon::OnBeginOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesDragon::OnBeginOverlap);
 }
 
 void AEndlessGravesDragon::OnPawnSeen(APawn* SeenPawn)
@@ -54,7 +54,7 @@ void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 {
 	ensure(FireBallClass != nullptr);
 	FVector direction = PlayerLocation - GetActorLocation();
-	const FVector SocketLocation = SkeletalMeshComp->GetSocketLocation("Bone_002");
+	const FVector SocketLocation = GetMesh()->GetSocketLocation("Bone_002");
 	direction.Normalize();
 
 	if (FireBallActor == nullptr)
