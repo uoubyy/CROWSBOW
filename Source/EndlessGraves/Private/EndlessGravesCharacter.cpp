@@ -19,6 +19,7 @@
 #include "EndlessGravesWeaponInterface.h"
 #include "EndlessGravesExtraHealth.h"
 #include "EndlessGravesWeaponSword.h"
+#include "EndlessGravesPlayerController.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -66,12 +67,6 @@ void AEndlessGravesCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (HUDInfoWidget == nullptr)
-	{
-		HUDInfoWidget = Cast<UEndlessGravesCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
-		HUDInfoWidget->AddToViewport(100);
-	}
-
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AEndlessGravesCharacter::OnHit);
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AEndlessGravesCharacter::OnExitOverlap);
@@ -90,6 +85,33 @@ void AEndlessGravesCharacter::BeginPlay()
 	}
 
 	SwordActor->ActiveSword(CurWeapon == EWeaponType::WEAPON_SWORD);
+
+	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+	if (PController)
+		DisableInput(PController);
+}
+
+
+void AEndlessGravesCharacter::OnStartGame()
+{
+	if (HUDInfoWidget == nullptr)
+		HUDInfoWidget = Cast<UEndlessGravesCharacterInfoWidget>(CreateWidget(GetWorld(), HUDInfoWidgetClass));
+	if(HUDInfoWidget->IsInViewport() == false)
+		HUDInfoWidget->AddToViewport();
+
+	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+	if(PController)
+		EnableInput(PController);
+}
+
+void AEndlessGravesCharacter::OnGameOver()
+{
+	if(HUDInfoWidget->IsInViewport())
+		HUDInfoWidget->RemoveFromParent();
+
+	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+	if (PController)
+		DisableInput(PController);
 }
 
 // Called to bind functionality to input
@@ -352,10 +374,11 @@ void AEndlessGravesCharacter::ConstantDamage(float Damage)
 
 void AEndlessGravesCharacter::UpdateHUD()
 {
-	CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
+	if (HUDInfoWidget)
+	{
+		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
 
-	ensure(HUDInfoWidget != nullptr);
-
-	int curLife = FGenericPlatformMath::CeilToInt(CurHealth / MaxHealth * 3);
-	HUDInfoWidget->UpdateLifeStatus(curLife, CurHealth / MaxHealth);
+		int curLife = FGenericPlatformMath::CeilToInt(CurHealth / MaxHealth * 3);
+		HUDInfoWidget->UpdateLifeStatus(curLife, CurHealth / MaxHealth);
+	}
 }

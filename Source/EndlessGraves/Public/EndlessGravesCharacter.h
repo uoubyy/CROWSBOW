@@ -152,6 +152,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchWeaponTo(EWeaponType weaponType);
 
+	UFUNCTION(BlueprintCallable)
+	void OnStartGame();
+
+	UFUNCTION(BlueprintCallable)
+	void OnGameOver();
+
 private:
 	UFUNCTION()
 	void UpdateHUD();

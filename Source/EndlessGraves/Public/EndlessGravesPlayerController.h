@@ -40,6 +40,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnRestartGame();
 
+	UFUNCTION(BlueprintCallable)
+	void OnStartGame();
+
 	UFUNCTION(BlueprintCallable, Category = "Twitch")
 	void SummonEnemy(EEnemyType enemyType, int num);
 

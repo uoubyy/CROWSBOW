@@ -69,6 +69,11 @@ void AEndlessGravesPlayerController::OnRestartGame()
 
 }
 
+void AEndlessGravesPlayerController::OnStartGame()
+{
+	
+}
+
 void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 {
 	FVector CharacterLocation = GetPawn()->GetActorLocation();
@@ -88,7 +93,6 @@ void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 
 void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
 {
-
 	if (AllTombs.Num() > 0)
 	{
 		int32 LastIndex = AllTombs.Num() - 1;
