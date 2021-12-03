@@ -89,6 +89,8 @@ void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 	{
 		AEndlessGravesExtraHealth* HealthPowerUp = World->SpawnActor<AEndlessGravesExtraHealth>(ExtraHealthClass, PowerUpSpawnLocation, FRotator::ZeroRotator, ActorSpawnParams);
 	}
+
+	SummonEnemy(EEnemyType::EET_Skeleton, 3);
 }
 
 void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
@@ -106,10 +108,14 @@ void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
 		}
 	}
 
+	FVector CharacterLocation = GetPawn()->GetActorLocation();
+
 	for (int i = 0; i < num && i < AllTombs.Num(); i++)
 	{
 		AEndlessGravesTomb* tomb = Cast<AEndlessGravesTomb>(AllTombs[i]);
 		if (tomb)
-			tomb->SummonEnemy(enemyType);
+		{ 
+			tomb->SummonEnemy(enemyType, CharacterLocation);
+		}
 	}
 }

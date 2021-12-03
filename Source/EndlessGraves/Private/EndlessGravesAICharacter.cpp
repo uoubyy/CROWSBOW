@@ -9,6 +9,7 @@
 
 #include "UI/EndlessGravesHealthBarWidget.h"
 #include "EndlessGravesCharacter.h"
+#include "EndlessGravesAIController.h"
 
 // Sets default values
 AEndlessGravesAICharacter::AEndlessGravesAICharacter()
@@ -108,4 +109,11 @@ void AEndlessGravesAICharacter::UpdateAIHUD()
 
 	if (CurHealth <= 0)
 		Destroy();
+}
+
+void AEndlessGravesAICharacter::MoveToLocation(FVector Location)
+{
+	AEndlessGravesAIController* PController = Cast<AEndlessGravesAIController>(Controller);
+	if(PController)
+		PController->ChasingPlayer(Location);
 }

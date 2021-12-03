@@ -86,9 +86,9 @@ void AEndlessGravesCharacter::BeginPlay()
 
 	SwordActor->ActiveSword(CurWeapon == EWeaponType::WEAPON_SWORD);
 
-	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
-	if (PController)
-		DisableInput(PController);
+	//AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+	//if (PController)
+	//	DisableInput(PController);
 }
 
 
@@ -146,6 +146,7 @@ void AEndlessGravesCharacter::SetupPlayerInputComponent(UInputComponent* PlayerI
 void AEndlessGravesCharacter::OpenPlayerYawController(bool value)
 {
 	bUseControllerRotationYaw = value;
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, value ? TEXT("OpenPlayerYawController True") : TEXT("OpenPlayerYawController False"));
 }
 
 void AEndlessGravesCharacter::TurnAtRate(float Rate)

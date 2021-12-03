@@ -23,6 +23,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 	EEnemyState GetEnemyState() const { return CurEnemyState; }
 
+	UFUNCTION(BlueprintCallable, Category = Enemy)
+	virtual void MoveToLocation(FVector Location);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -72,4 +75,6 @@ protected:
 
 	UFUNCTION()
 	virtual void TurnToSenseActor();
+
+
 };

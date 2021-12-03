@@ -32,7 +32,7 @@ public:
 	class UStaticMeshComponent* StaticMeshComp;
 
 	UFUNCTION(BlueprintCallable, Category = SpawnEnemy)
-	void SummonEnemy(EEnemyType enemyType);
+	void SummonEnemy(EEnemyType enemyType, FVector playerLocation);
 
 protected:
 	// Called when the game starts or when spawned

@@ -29,9 +29,9 @@ void AEndlessGravesTomb::BeginPlay()
 	
 }
 
-void AEndlessGravesTomb::SummonEnemy(EEnemyType enemyType)
+void AEndlessGravesTomb::SummonEnemy(EEnemyType enemyType, FVector playerLocation)
 {
-	ensure(EnemyDragonClass && EnemySkeletonClass);
+	ensure(EnemyDragonClass && EnemySkeletonClass && TEXT("Dragon or Skeleton class is NULL!"));
 	UWorld* const World = GetWorld();
 	if(World)
 	{ 
@@ -43,11 +43,17 @@ void AEndlessGravesTomb::SummonEnemy(EEnemyType enemyType)
 		switch (enemyType)
 		{
 		case EEnemyType::EET_Skeleton:
-			World->SpawnActor<AEndlessGravesSkeleton>(EnemySkeletonClass, SpawnLocation, FRotator::ZeroRotator, SpawnInfo);
+		{
+			AEndlessGravesSkeleton* skeleton = World->SpawnActor<AEndlessGravesSkeleton>(EnemySkeletonClass, SpawnLocation, FRotator::ZeroRotator, SpawnInfo);
+			skeleton->MoveToLocation(playerLocation);
 			break;
+		}
 		case EEnemyType::EET_Dragon:
-			World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation + FVector(0.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnInfo);
+		{
+			AEndlessGravesDragon* dragon = World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation + FVector(0.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnInfo);
+			dragon->MoveToLocation(playerLocation);
 			break;
+		}
 		default:
 			break;
 		}
