@@ -39,6 +39,7 @@ AEndlessGravesAICharacter::AEndlessGravesAICharacter()
 	HealthWidgetComp->SetWidgetClass(HealthBarBP.Class);
 
 	CurHealth = MaxHealth;
+	CurEnemyState = EEnemyState::ES_Idle;
 }
 
 // Called when the game starts or when spawned

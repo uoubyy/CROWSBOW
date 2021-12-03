@@ -123,6 +123,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	class UAnimMontage* ShootArrowAnimMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = Weapon)
+	TSubclassOf<class UCameraShakeBase> CamShake;
+
 	UFUNCTION()
 	void WeaponResume();
 
@@ -173,4 +176,7 @@ private:
 
 	UFUNCTION()
 	void ConstantDamage(float Damage);
+
+	UFUNCTION()
+	void CamShakeEffect(float Scale);
 };

@@ -79,7 +79,7 @@ void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 	FVector CharacterLocation = GetPawn()->GetActorLocation();
 	FVector ForwardDirection = GetPawn()->GetActorForwardVector();
 	FVector PowerUpSpawnLocation = CharacterLocation + ForwardDirection * 200.0f;
-	PowerUpSpawnLocation.Z += 100.0f;
+	PowerUpSpawnLocation.Z += 50.0f;
 
 	FActorSpawnParameters ActorSpawnParams;
 	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;// ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;

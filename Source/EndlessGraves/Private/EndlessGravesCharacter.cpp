@@ -336,6 +336,8 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				}
 				break;
 			default:
+				CurHealth -= Weapon->GetDamage();
+				CamShakeEffect(1.0f);
 				break;
 			}
 		}
@@ -382,4 +384,11 @@ void AEndlessGravesCharacter::UpdateHUD()
 		int curLife = FGenericPlatformMath::CeilToInt(CurHealth / MaxHealth * 3);
 		HUDInfoWidget->UpdateLifeStatus(curLife, CurHealth / MaxHealth);
 	}
+}
+
+void AEndlessGravesCharacter::CamShakeEffect(float Scale)
+{
+	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+	if(PController)
+	PController->PlayerCameraManager->StartCameraShake(CamShake, Scale);
 }

@@ -7,7 +7,7 @@
 void AEndlessGravesAIController::ChasingPlayer(FVector Location)
 {
 	TargetLocation = Location;
-	MoveToLocation(TargetLocation, 50.0f);
+	MoveToLocation(TargetLocation, 50.0f, false);
 }
 
 void AEndlessGravesAIController::RandomMovement(FVector Origin)

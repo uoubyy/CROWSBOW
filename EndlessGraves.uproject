@@ -1,6 +1,6 @@
 {
 	"FileVersion": 3,
-	"EngineAssociation": "{C2555E4D-428D-8990-F46A-96866BDD3E47}",
+	"EngineAssociation": "4.27",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"UMG",
-				"AIModule"
+				"AIModule",
+				"GameplayCameras"
 			]
 		}
 	],
@@ -20,6 +21,11 @@
 			"Name": "TwitchPlay",
 			"Enabled": true,
 			"MarketplaceURL": "https://www.unrealengine.com/marketplace/twitchplay-plugin"
+		},
+		{
+			"Name": "DarkerNodes",
+			"Enabled": true,
+			"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/content/4b3441f0228a40ec9ca986489a5bd682"
 		}
 	]
 }

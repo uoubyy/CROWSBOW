@@ -45,13 +45,14 @@ void AEndlessGravesTomb::SummonEnemy(EEnemyType enemyType, FVector playerLocatio
 		case EEnemyType::EET_Skeleton:
 		{
 			AEndlessGravesSkeleton* skeleton = World->SpawnActor<AEndlessGravesSkeleton>(EnemySkeletonClass, SpawnLocation, FRotator::ZeroRotator, SpawnInfo);
-			skeleton->MoveToLocation(playerLocation);
+			//skeleton->MoveToLocation(playerLocation);
 			break;
 		}
 		case EEnemyType::EET_Dragon:
 		{
-			AEndlessGravesDragon* dragon = World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation + FVector(0.0f, 0.0f, 100.0f), FRotator::ZeroRotator, SpawnInfo);
-			dragon->MoveToLocation(playerLocation);
+			AEndlessGravesDragon* dragon = World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation, FRotator::ZeroRotator, SpawnInfo);
+			FVector Direction = playerLocation + FVector(0.0f, 0.0f, 300.0f);
+			//dragon->MoveToLocation(Direction);
 			break;
 		}
 		default:
