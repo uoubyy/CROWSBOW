@@ -24,6 +24,12 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = UI)
 	class UUserWidget* PauseMenuInstance;
 
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<UUserWidget> GameOverMenuClass;
+
+	UPROPERTY(BlueprintReadWrite, Category = UI)
+	class UUserWidget* GameOverMenuInstance;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Twitch")
 	TSubclassOf<class AEndlessGravesExtraHealth> ExtraHealthClass;
 
@@ -42,6 +48,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void OnStartGame();
+
+
+	UFUNCTION(BlueprintCallable)
+	void OnGameOver();
 
 	UFUNCTION(BlueprintCallable, Category = "Twitch")
 	void SummonEnemy(EEnemyType enemyType, int num);

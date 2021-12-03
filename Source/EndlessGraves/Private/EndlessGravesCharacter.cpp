@@ -20,6 +20,7 @@
 #include "EndlessGravesExtraHealth.h"
 #include "EndlessGravesWeaponSword.h"
 #include "EndlessGravesPlayerController.h"
+#include "EndlessGravesBossCharacter.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -85,10 +86,12 @@ void AEndlessGravesCharacter::BeginPlay()
 	}
 
 	SwordActor->ActiveSword(CurWeapon == EWeaponType::WEAPON_SWORD);
+	SwordActor->ChangeDamageCoe(0.0f);
+}
 
-	//AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
-	//if (PController)
-	//	DisableInput(PController);
+void AEndlessGravesCharacter::ChangeDamageCoe(float value)
+{
+	SwordActor->ChangeDamageCoe(value);
 }
 
 
@@ -209,9 +212,9 @@ void AEndlessGravesCharacter::StartAttack()
 {
 	if (CurWeapon == EWeaponType::WEAPON_SWORD)
 	{
-		//OnSlashSword();
+		// OnSlashSword();
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		if(AnimInstance->Montage_IsPlaying(SlashSwordAnimMontage) == false)
+		if (AnimInstance->Montage_IsPlaying(SlashSwordAnimMontage) == false)
 			AnimInstance->Montage_Play(SlashSwordAnimMontage);
 	}
 	else
@@ -288,20 +291,23 @@ void AEndlessGravesCharacter::WeaponResume()
 
 void AEndlessGravesCharacter::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnHit %s"), *(OtherActor->GetName())));
+	// TODO
+	// skeleton on hit bug
+	// remove skeleton sword into single weapon
+	// disable this for now 
+	//IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+	//if (Weapon)
+	//{
+	//	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter OnHit %s"), *(OtherActor->GetName())));
 
-	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
-	if (Weapon)
-	{
-		CurHealth -= Weapon->GetDamage();
-	}
+	//	CurHealth -= Weapon->GetDamage();
+	//}
 
-	UpdateHUD();
+	//UpdateHUD();
 }
 
 void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnBeginOverlap %s"), *(OtherActor->GetName())));
 
 	IEndlessGravesPowerUpInterface* PowerUp = Cast<IEndlessGravesPowerUpInterface>(OtherActor);
 	if (PowerUp)
@@ -318,8 +324,10 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 			break;
 		}
 	}
-	else
+
+	if (!DamageImmunity)
 	{
+
 		IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
 		//FString weaponTypeName;
 		//GetEnumValueAsString< EDamageType>(weaponTypeName, Weapon->GetDamageType());
@@ -327,6 +335,8 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 		if (Weapon)
 		{
+			// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnBeginOverlap Weapon %s"), *(OtherActor->GetName())));
+
 			switch (Weapon->GetDamageType())
 			{
 			case EDamageType::EDT_Constant:
@@ -343,8 +353,18 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				break;
 			}
 		}
+		else
+		{
+			// check hit result
+			// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter Bone Name %s"), *(SweepResult.BoneName.ToString())));
+			// TODO configurable
+			AEndlessGravesBossCharacter* Boss = Cast<AEndlessGravesBossCharacter>(OtherActor);
+			if (Boss && BossDamageBoneList.Contains(SweepResult.BoneName.ToString()))
+			{
+				CurHealth -= Boss->GetDamage();
+			}
+		}
 	}
-
 	UpdateHUD();
 }
 
@@ -379,10 +399,16 @@ void AEndlessGravesCharacter::ConstantDamage(float Damage)
 
 void AEndlessGravesCharacter::UpdateHUD()
 {
+	if (CurHealth <= 0)
+	{
+		AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+		if (PController)
+			PController->OnGameOver();
+	}
+
+	CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
 	if (HUDInfoWidget)
 	{
-		CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);
-
 		int curLife = FGenericPlatformMath::CeilToInt(CurHealth / MaxHealth * 3);
 		HUDInfoWidget->UpdateLifeStatus(curLife, CurHealth / MaxHealth);
 	}
@@ -392,5 +418,5 @@ void AEndlessGravesCharacter::CamShakeEffect(float Scale)
 {
 	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
 	if(PController)
-	PController->PlayerCameraManager->StartCameraShake(CamShake, Scale);
+		PController->PlayerCameraManager->StartCameraShake(CamShake, Scale);
 }
