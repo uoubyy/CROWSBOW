@@ -11,6 +11,8 @@
 #include "EndlessGravesCharacter.h"
 #include "EndlessGravesAIController.h"
 
+#include "Kismet/KismetMathLibrary.h"
+
 // Sets default values
 AEndlessGravesAICharacter::AEndlessGravesAICharacter()
 {

@@ -155,6 +155,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchWeaponTo(EWeaponType weaponType);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSwitchWeaponBP();
+
 	UFUNCTION(BlueprintCallable)
 	void OnStartGame();
 
