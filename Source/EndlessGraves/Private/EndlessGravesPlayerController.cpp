@@ -5,6 +5,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/GameplayStatics.h"
 #include "EndlessGravesExtraHealth.h"
+#include "EndlessGravesTomb.h"
+
+#include "Math/UnrealMathUtility.h"
 
 void AEndlessGravesPlayerController::SetupInputComponent()
 {
@@ -13,6 +16,13 @@ void AEndlessGravesPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Pause", IE_Pressed, this, &AEndlessGravesPlayerController::OnPauseGame);
 	InputComponent->BindAction("PowerUpHealth", IE_Pressed, this, &AEndlessGravesPlayerController::SpawnExtraHealthPowerUp);
 	// InputComponent->BindAction("SummonEnemy", IE_Pressed, this, &AEndlessGravesPlayerController::SummonEnemy);
+}
+
+void AEndlessGravesPlayerController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEndlessGravesTomb::StaticClass(), AllTombs);
 }
 
 void AEndlessGravesPlayerController::OnPauseGame()
@@ -78,5 +88,21 @@ void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 
 void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
 {
+	TArray<int> randomIndex;
+	while (num)
+	{
+		int index = FMath::RandRange(0, AllTombs.Num() - 1);
+		if (randomIndex.Contains(index) == false)
+		{
+			num--;
+			randomIndex.Push(index);
+		}
+	}
 
+	for (int index : randomIndex)
+	{
+		AEndlessGravesTomb* tomb = Cast<AEndlessGravesTomb>(AllTombs[index]);
+		if(tomb)
+			tomb->SummonEnemy(enemyType);
+	}
 }

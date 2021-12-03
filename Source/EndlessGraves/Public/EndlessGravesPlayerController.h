@@ -24,8 +24,11 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = UI)
 	class UUserWidget* PauseMenuInstance;
 
-	UPROPERTY(EditDefaultsOnly, Category = PowerUp)
+	UPROPERTY(EditDefaultsOnly, Category = "Twitch")
 	TSubclassOf<class AEndlessGravesExtraHealth> ExtraHealthClass;
+
+	UPROPERTY(VisibleAnywhere, Category = "Twitch")
+	TArray<class AActor*> AllTombs;
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -37,9 +40,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnRestartGame();
 
-	UFUNCTION(BlueprintCallable, Category = Twitch)
+	UFUNCTION(BlueprintCallable, Category = "Twitch")
 	void SummonEnemy(EEnemyType enemyType, int num);
 
-	UFUNCTION(BlueprintCallable, Category = Twitch)
+	UFUNCTION(BlueprintCallable, Category = "Twitch")
 	void SpawnExtraHealthPowerUp();
+
+	virtual void BeginPlay() override;
 };
