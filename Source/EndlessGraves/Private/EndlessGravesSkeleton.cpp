@@ -10,7 +10,7 @@
 
 #include "Kismet/KismetMathLibrary.h"
 
-AEndlessGravesSkeleton::AEndlessGravesSkeleton()
+AEndlessGravesSkeleton::AEndlessGravesSkeleton() : AEndlessGravesAICharacter()
 {
 }
 

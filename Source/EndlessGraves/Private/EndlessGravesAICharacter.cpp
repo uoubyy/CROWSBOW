@@ -38,7 +38,6 @@ AEndlessGravesAICharacter::AEndlessGravesAICharacter()
 	HealthWidgetComp->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthWidgetComp->SetWidgetClass(HealthBarBP.Class);
 
-	CurHealth = MaxHealth;
 	CurEnemyState = EEnemyState::ES_Idle;
 }
 
@@ -46,7 +45,7 @@ AEndlessGravesAICharacter::AEndlessGravesAICharacter()
 void AEndlessGravesAICharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	CurHealth = MaxHealth;
 	HealthBar = Cast<UEndlessGravesHealthBarWidget>(HealthWidgetComp->GetUserWidgetObject());
 	HealthWidgetComp->SetVisibility(false);
 }

@@ -61,7 +61,7 @@ protected:
 	float Damage;
 
 	UPROPERTY(EditDefaultsOnly, Category = Health)
-	float MaxHealth = 100.0f;
+	float MaxHealth;
 
 	UPROPERTY(VisibleAnywhere, Category = Health)
 	float CurHealth;
