@@ -88,21 +88,24 @@ void AEndlessGravesPlayerController::SpawnExtraHealthPowerUp()
 
 void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
 {
-	TArray<int> randomIndex;
-	while (num)
+
+	if (AllTombs.Num() > 0)
 	{
-		int index = FMath::RandRange(0, AllTombs.Num() - 1);
-		if (randomIndex.Contains(index) == false)
+		int32 LastIndex = AllTombs.Num() - 1;
+		for (int32 i = 0; i <= LastIndex; ++i)
 		{
-			num--;
-			randomIndex.Push(index);
+			int32 Index = FMath::RandRange(i, LastIndex);
+			if (i != Index)
+			{
+				AllTombs.Swap(i, Index);
+			}
 		}
 	}
 
-	for (int index : randomIndex)
+	for (int i = 0; i < num && i < AllTombs.Num(); i++)
 	{
-		AEndlessGravesTomb* tomb = Cast<AEndlessGravesTomb>(AllTombs[index]);
-		if(tomb)
+		AEndlessGravesTomb* tomb = Cast<AEndlessGravesTomb>(AllTombs[i]);
+		if (tomb)
 			tomb->SummonEnemy(enemyType);
 	}
 }
