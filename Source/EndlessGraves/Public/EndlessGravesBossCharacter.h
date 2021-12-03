@@ -16,6 +16,9 @@ public:
 	AEndlessGravesBossCharacter();
 
 protected:
+
+	virtual void Tick( float DeltaSeconds ) override;
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -30,4 +33,11 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable, Category = Boss)
 	float GetRotationZ() {return 5.0f;}
+
+	// random from 3.0 to 5.0
+	float StateDuration;
+
+	float CurStateTime;
+
+	void GenerateNewState();
 };

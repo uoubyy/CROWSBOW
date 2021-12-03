@@ -35,7 +35,7 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 
 	if (Distance <= MaxAttackDistance)
 	{
-		CurEnemyState = EEnemyState::ES_Attack;
+		CurEnemyState = EEnemyState::ES_Attack1;
 	}
 	else
 	{

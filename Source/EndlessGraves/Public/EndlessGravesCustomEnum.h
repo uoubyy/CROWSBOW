@@ -27,7 +27,8 @@ enum class EEnemyState : uint8
 {
 	ES_Idle		UMETA(DisplayName = "Idle"),
 	ES_Running	UMETA(DisplayName = "Running"),
-	ES_Attack	UMETA(DisplayName = "Attack"),
+	ES_Attack1	UMETA(DisplayName = "Attack 1"),
+	ES_Attack2	UMETA(DisplayName = "Attack 2"),
 	ES_None		UMETA(DisplayName = "None")
 };
 

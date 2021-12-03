@@ -10,7 +10,7 @@
 AEndlessGravesBossCharacter::AEndlessGravesBossCharacter() : AEndlessGravesAICharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	// PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
@@ -20,6 +20,23 @@ void AEndlessGravesBossCharacter::BeginPlay()
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &AEndlessGravesBossCharacter::OnPawnSeen);
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AEndlessGravesBossCharacter::OnNoiseHeard);
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesBossCharacter::OnBeginOverlap);
+
+	GenerateNewState();
+}
+
+void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
+{
+	CurStateTime += DeltaSeconds;
+	if(CurStateTime > StateDuration)
+		GenerateNewState();
+}
+
+void AEndlessGravesBossCharacter::GenerateNewState()
+{
+	StateDuration = FMath::RandRange(3.0f, 5.0f);
+	CurStateTime = 0.0f;
+
+	CurEnemyState = static_cast<EEnemyState>(FMath::RandRange(0, 3));
 }
 
 void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
