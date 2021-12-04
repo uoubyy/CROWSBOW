@@ -194,6 +194,13 @@ private:
 	UFUNCTION()
 	void UnlockDamageImmunity() { DamageImmunity = false;}
 
+	FOnMontageEnded SlashMontageEndDelegate;
+
+	void OnSlashAnimationEnded(UAnimMontage* Montage, bool bInterrupted);
+
 	FTimerHandle DamageImmunityTimeHandler;
+
+	UPROPERTY()
+	class UAnimInstance* AnimInstance;
 
 };
