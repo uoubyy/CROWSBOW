@@ -18,7 +18,7 @@ public:
 	AEndlessGravesWeaponSword();
 
 	UFUNCTION(BlueprintCallable, Category = Damage)
-	void ChangeDamageCoe(float value) { DamageCoefficient = value; }
+	void ChangeDamageCoe(float value);// { DamageCoefficient = value; }
 
 protected:
 	// Called when the game starts or when spawned

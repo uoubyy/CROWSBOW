@@ -51,6 +51,7 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 
 void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 {
+	Super::AttackPlayer(PlayerLocation);
 	ensure(FireBallClass != nullptr);
 	FVector direction = PlayerLocation - GetActorLocation();
 	const FVector SocketLocation = GetMesh()->GetSocketLocation("Bone_002");
@@ -78,8 +79,11 @@ void AEndlessGravesDragon::OnBeginOverlap(UPrimitiveComponent* OverlappedCompone
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon::OnBeginOverlap %s"), *(OtherActor->GetName())));
 
 	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
-	if (Weapon)
+	if (Weapon && DamageImmunity == false)
+	{ 
 		CurHealth -= Weapon->GetDamage();
+		GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesDragon::UnlockDamageImmunity, 0.5f, false);
+	}
 
 	UpdateAIHUD();
 }

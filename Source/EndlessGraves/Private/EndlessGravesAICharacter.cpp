@@ -84,7 +84,7 @@ void AEndlessGravesAICharacter::OnPawnLost()
 
 void AEndlessGravesAICharacter::AttackPlayer(FVector PlayerLocation)
 {
-
+	PlayAttackSound();
 }
 
 void AEndlessGravesAICharacter::TurnToSenseActor()

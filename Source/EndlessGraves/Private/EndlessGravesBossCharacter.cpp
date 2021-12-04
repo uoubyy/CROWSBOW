@@ -39,7 +39,7 @@ void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
 
 void AEndlessGravesBossCharacter::GenerateNewState()
 {
-	StateDuration = FMath::RandRange(5.0f, 10.0f);
+	StateDuration = FMath::RandRange(3.0f, 5.0f);
 	CurStateTime = 0.0f;
 
 	if(CurEnemyState != EEnemyState::ES_Idle)
@@ -50,12 +50,13 @@ void AEndlessGravesBossCharacter::GenerateNewState()
 
 float AEndlessGravesBossCharacter::GetDamage()
 {
-	if (CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
-	{
-		return Damage;
-	}
+	//if (CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
+	//{
+	//	return Damage;
+	//}
 
-	return 0.0f;
+	//return 0.0f;
+	return Damage;
 }
 
 void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
@@ -65,12 +66,17 @@ void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
 
 void AEndlessGravesBossCharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
-	// Super::OnNoiseHeard(HeardPawn, Location, Volume);
+	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
 	// TODO debug
 	OnPawnSeen(HeardPawn);
 
-	CanAttackPlayer = true;
+	if((Location - GetActorLocation()).Size() <= 1000.0f && CanAttackPlayer == false)
+	{ 
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("AEndlessGravesBossCharacter change into attack"));
+		CurEnemyState = EEnemyState::ES_Attack1;
+		CanAttackPlayer = true;
+	}
 }
 
 void AEndlessGravesBossCharacter::OnPawnLost()
@@ -81,13 +87,19 @@ void AEndlessGravesBossCharacter::OnPawnLost()
 
 void AEndlessGravesBossCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
-	if (Weapon)
+	if (DamageImmunity == false)
 	{
-		CurHealth -= Weapon->GetDamage() * 0.3f;
-	}
+		IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
+		if (Weapon)
+		{
+			CurHealth -= Weapon->GetDamage() * 0.3f;
+			DamageImmunity = true;
 
-	UpdateAIHUD();
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesBossCharacter::UnlockDamageImmunity, 0.5f, false);
+		}
+
+		UpdateAIHUD();
+	}
 }
 
 void AEndlessGravesBossCharacter::TurnToSenseActor()

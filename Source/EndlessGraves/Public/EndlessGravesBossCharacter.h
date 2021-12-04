@@ -49,4 +49,12 @@ public:
 	float GetDamage();
 
 	bool CanAttackPlayer = false;
+
+private:
+	bool DamageImmunity = false;
+
+	UFUNCTION()
+		void UnlockDamageImmunity() { DamageImmunity = false; }
+
+	FTimerHandle DamageImmunityTimeHandler;
 };

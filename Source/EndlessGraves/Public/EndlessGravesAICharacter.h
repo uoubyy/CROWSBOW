@@ -26,6 +26,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 	virtual void MoveToLocation(FVector Location);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayAttackSound();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

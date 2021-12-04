@@ -87,6 +87,9 @@ void AEndlessGravesCharacter::BeginPlay()
 
 	SwordActor->ActiveSword(CurWeapon == EWeaponType::WEAPON_SWORD);
 	SwordActor->ChangeDamageCoe(0.0f);
+
+	AnimInstance = GetMesh()->GetAnimInstance();
+	SlashMontageEndDelegate.BindUObject(this, &AEndlessGravesCharacter::OnSlashAnimationEnded);
 }
 
 void AEndlessGravesCharacter::ChangeDamageCoe(float value)
@@ -212,14 +215,17 @@ void AEndlessGravesCharacter::StartAttack()
 {
 	if (CurWeapon == EWeaponType::WEAPON_SWORD)
 	{
+		SwordActor->ChangeDamageCoe(1.0f);
 		// OnSlashSword();
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
 		if (AnimInstance->Montage_IsPlaying(SlashSwordAnimMontage) == false)
+		{ 
 			AnimInstance->Montage_Play(SlashSwordAnimMontage);
+			AnimInstance->Montage_SetEndDelegate(SlashMontageEndDelegate, SlashSwordAnimMontage);
+		}
 	}
 	else
 	{
-		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 		AnimInstance->Montage_Play(ShootArrowAnimMontage);
 		OnFireArrow();
 	}
@@ -252,8 +258,8 @@ void AEndlessGravesCharacter::OnFireArrow()
 			// spawn the projectile at the muzzle
 			AEndlessGravesProjectile* arrow = World->SpawnActor<AEndlessGravesProjectile>(ArrowClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 
-			if(arrow == nullptr)
-				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("EndlessGravesCharacter::OnFireArrow failed"));
+			//if(arrow == nullptr)
+			//	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("EndlessGravesCharacter::OnFireArrow failed"));
 		}
 	}
 }
@@ -350,7 +356,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				break;
 			}
 
-			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.3f, false);
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.2f, false);
 		}
 		else
 		{
@@ -363,7 +369,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				CurHealth -= Boss->GetDamage();
 			}
 
-			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.3f, false);
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.2f, false);
 		}
 	}
 	UpdateHUD();
@@ -420,4 +426,9 @@ void AEndlessGravesCharacter::CamShakeEffect(float Scale)
 	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
 	if(PController)
 		PController->PlayerCameraManager->StartCameraShake(CamShake, Scale);
+}
+
+void AEndlessGravesCharacter::OnSlashAnimationEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	SwordActor->ChangeDamageCoe(0.0f);
 }
