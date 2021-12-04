@@ -4,6 +4,7 @@
 #include "EndlessGravesTomb.h"
 #include "EndlessGravesSkeleton.h"
 #include "EndlessGravesDragon.h"
+#include "EndlessGravesAIController.h"
 
 #include "Components/StaticMeshComponent.h"
 
@@ -44,15 +45,14 @@ void AEndlessGravesTomb::SummonEnemy(EEnemyType enemyType, FVector playerLocatio
 		{
 		case EEnemyType::EET_Skeleton:
 		{
-			AEndlessGravesSkeleton* skeleton = World->SpawnActor<AEndlessGravesSkeleton>(EnemySkeletonClass, SpawnLocation + FVector(0.0f, 0.0f, 50.0f),  FRotator::ZeroRotator, SpawnInfo);
-			//skeleton->InterpToLocation(playerLocation);
+			// AEndlessGravesSkeleton* skeleton = 
+			World->SpawnActor<AEndlessGravesSkeleton>(EnemySkeletonClass, SpawnLocation + FVector(0.0f, 0.0f, 50.0f),  FRotator::ZeroRotator, SpawnInfo);
 			break;
 		}
 		case EEnemyType::EET_Dragon:
 		{
-			AEndlessGravesDragon* dragon = World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation, FRotator::ZeroRotator, SpawnInfo);
-			FVector Direction = playerLocation + FVector(0.0f, 0.0f, 300.0f);
-			//dragon->MoveToLocation(Direction);
+			// AEndlessGravesDragon* dragon = 
+			World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation, FRotator::ZeroRotator, SpawnInfo);
 			break;
 		}
 		default:

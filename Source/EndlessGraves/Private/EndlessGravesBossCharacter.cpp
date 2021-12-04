@@ -23,14 +23,13 @@ void AEndlessGravesBossCharacter::BeginPlay()
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesBossCharacter::OnBeginOverlap);
 
 	HealthWidgetComp->SetVisibility(true);
-	CurEnemyState = EEnemyState::ES_Idle;
 }
 
 void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(true);
-	if(CanAttackPlayer)
-	{ 
+	if (CanAttackPlayer)
+	{
 		CurStateTime += DeltaSeconds;
 		if (CurStateTime > StateDuration)
 			GenerateNewState();
@@ -40,12 +39,11 @@ void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
 void AEndlessGravesBossCharacter::GenerateNewState()
 {
 	StateDuration = FMath::RandRange(3.0f, 5.0f);
-	CurStateTime = 0.0f;
 
-	if(CurEnemyState != EEnemyState::ES_Idle)
-		CurEnemyState = EEnemyState::ES_Idle;
+	if (CurEnemyState != EEnemyState::ES_Idle)
+		ChangeStateInto(EEnemyState::ES_Idle);
 	else
-		CurEnemyState = static_cast<EEnemyState>(FMath::RandRange(0, 3));
+		ChangeStateInto(static_cast<EEnemyState>(FMath::RandRange(0, 4)));
 }
 
 float AEndlessGravesBossCharacter::GetDamage()
@@ -71,17 +69,18 @@ void AEndlessGravesBossCharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& 
 	// TODO debug
 	OnPawnSeen(HeardPawn);
 
-	if((Location - GetActorLocation()).Size() <= 1000.0f && CanAttackPlayer == false)
+	if((Location - GetActorLocation()).Size() <= MaxAttackDistance && CanAttackPlayer == false)
 	{ 
 		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("AEndlessGravesBossCharacter change into attack"));
-		CurEnemyState = EEnemyState::ES_Attack1;
+		ChangeStateInto(EEnemyState::ES_Attack1);
 		CanAttackPlayer = true;
 	}
 }
 
 void AEndlessGravesBossCharacter::OnPawnLost()
 {
-	CurEnemyState = EEnemyState::ES_Idle;
+	Super::OnPawnLost();
+	
 	CanAttackPlayer = false;
 }
 

@@ -35,22 +35,14 @@ protected:
 
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-	//void OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 	UPROPERTY(VisibleAnywhere, Category = Movement)
 	float ChaseSpeed = 100.0f;
 
-	UPROPERTY(EditDefaultsOnly, Category = Ability)
-	float MaxAttackDistance = 150.0f;
+	virtual void ChangeStateInto(EEnemyState newState) override;
+
+	virtual void GenerateNewState() override;
 
 private:
 
 	FVector TargetDirection;
-
-	bool DamageImmunity = false;
-
-	UFUNCTION()
-	void UnlockDamageImmunity() { DamageImmunity = false; }
-
-	FTimerHandle DamageImmunityTimeHandler;
 };

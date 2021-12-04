@@ -78,7 +78,7 @@ void AEndlessGravesAICharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Lo
 
 void AEndlessGravesAICharacter::OnPawnLost()
 {
-	CurEnemyState = EEnemyState::ES_Idle;
+	ChangeStateInto(EEnemyState::ES_Idle);
 	HealthWidgetComp->SetVisibility(false);
 }
 

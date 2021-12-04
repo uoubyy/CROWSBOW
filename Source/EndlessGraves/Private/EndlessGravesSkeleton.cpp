@@ -22,6 +22,9 @@ void AEndlessGravesSkeleton::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesSkeleton::OnBeginOverlap);
 	//CapsuleComp->OnComponentEndOverlap.AddDynamic(this, &AEndlessGravesSkeleton::OnExitOverlap);
+
+	StateDuration = 3.0f;// TODO optimize
+	ChangeStateInto(EEnemyState::ES_Wander);
 }
 
 void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
@@ -35,11 +38,11 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 
 	if (Distance <= MaxAttackDistance)
 	{
-		CurEnemyState = EEnemyState::ES_Attack1;
+		ChangeStateInto(EEnemyState::ES_Attack1);
 	}
 	else
 	{
-		CurEnemyState = EEnemyState::ES_Running;
+		ChangeStateInto(EEnemyState::ES_Running);
 		AEndlessGravesAIController* AIController = Cast<AEndlessGravesAIController>(GetController());
 		if (AIController)
 			AIController->ChasingPlayer(SensedLocation);
@@ -69,8 +72,6 @@ void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 	if (Weapon && DamageImmunity == false)
 	{
 		CurHealth -= Weapon->GetDamage() * 0.6;
-		//FVector LaunchVeolocity = GetActorForwardVector() * 1000.0f;
-		//LaunchCharacter(LaunchVeolocity, true, false);
 
 		GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesSkeleton::UnlockDamageImmunity, 0.5f, false);
 	}
@@ -78,8 +79,41 @@ void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 	UpdateAIHUD();
 }
 
-//
-//void AEndlessGravesSkeleton::OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-//{
-//
-//}
+void AEndlessGravesSkeleton::ChangeStateInto(EEnemyState newState)
+{
+	Super::ChangeStateInto(newState);
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("ChangeStateInto %s"), *(GetEnumValueAsString<EEnemyState>("EEnemyState", CurEnemyState))));
+
+	AEndlessGravesAIController* PController = Cast<AEndlessGravesAIController>(GetController());
+	PController->StopMovement();
+
+	switch (newState)
+	{
+	case EEnemyState::ES_Idle:
+		GetWorldTimerManager().SetTimer(ChangeStateHandle, this, &AEndlessGravesSkeleton::GenerateNewState, StateDuration, false);
+		break;
+	case EEnemyState::ES_Wander:
+		GetWorldTimerManager().SetTimer(ChangeStateHandle, this, &AEndlessGravesSkeleton::GenerateNewState, StateDuration, false);
+		if(PController->TryStartWander() == false)
+			CurEnemyState = EEnemyState::ES_Idle;
+		break;
+	case EEnemyState::ES_Running:
+	case EEnemyState::ES_Attack1:
+	case EEnemyState::ES_Attack2:
+	{
+		break;
+	}
+	case EEnemyState::ES_None:
+		break;
+	default:
+		break;
+	}
+}
+
+void AEndlessGravesSkeleton::GenerateNewState()
+{
+	StateDuration = FMath::RandRange(3.0f, 5.0f);
+
+	ChangeStateInto(CurEnemyState == EEnemyState::ES_Idle ? EEnemyState::ES_Wander : EEnemyState::ES_Idle);
+}

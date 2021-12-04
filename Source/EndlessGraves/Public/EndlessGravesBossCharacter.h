@@ -32,29 +32,16 @@ protected:
 
 	virtual void TurnToSenseActor() override;
 
+	virtual void GenerateNewState() override;
+
 public:
 	UFUNCTION(BlueprintCallable, Category = Boss)
 	float GetRotationZ() {return RotationZ;}
 
 	float RotationZ = 0.0f;
 
-	// random from 3.0 to 5.0
-	float StateDuration;
-
-	float CurStateTime;
-
-	void GenerateNewState();
-
 	UFUNCTION(BlueprintCallable, Category = Boss)
 	float GetDamage();
 
 	bool CanAttackPlayer = false;
-
-private:
-	bool DamageImmunity = false;
-
-	UFUNCTION()
-		void UnlockDamageImmunity() { DamageImmunity = false; }
-
-	FTimerHandle DamageImmunityTimeHandler;
 };

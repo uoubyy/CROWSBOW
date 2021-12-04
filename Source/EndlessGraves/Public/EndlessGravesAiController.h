@@ -23,5 +23,5 @@ public:
 	void ChasingPlayer(FVector Location);
 
 	UFUNCTION(BlueprintCallable, Category = AIController)
-	void RandomMovement(FVector Location);
+	bool TryStartWander();
 };

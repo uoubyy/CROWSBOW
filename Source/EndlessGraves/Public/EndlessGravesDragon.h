@@ -26,12 +26,7 @@ protected:
 
 	virtual void AttackPlayer(FVector PlayerLocation);
 
-	//virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) {}
-
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-
-	UPROPERTY(EditDefaultsOnly, Category = Damage)
-	float MaxAttackDistance;
 
 	UPROPERTY(EditDefaultsOnly, Category = Damage)
 	TSubclassOf<class AEndlessGravesFireBall> FireBallClass;
@@ -40,11 +35,4 @@ private:
 
 	UPROPERTY()
 	class AEndlessGravesFireBall* FireBallActor = nullptr;
-
-	bool DamageImmunity = false;
-
-	UFUNCTION()
-	void UnlockDamageImmunity() { DamageImmunity = false; }
-
-	FTimerHandle DamageImmunityTimeHandler;
 };

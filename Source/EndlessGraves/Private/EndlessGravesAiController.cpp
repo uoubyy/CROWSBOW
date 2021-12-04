@@ -10,7 +10,16 @@ void AEndlessGravesAIController::ChasingPlayer(FVector Location)
 	MoveToLocation(TargetLocation, 120.0f, false, true, true);
 }
 
-void AEndlessGravesAIController::RandomMovement(FVector Origin)
+bool AEndlessGravesAIController::TryStartWander()
 {
+	UNavigationSystemV1* NavSys = FNavigationSystem::GetCurrent<UNavigationSystemV1>(GetWorld());
+	FNavLocation NavLocation;
+	bool result = NavSys->GetRandomReachablePointInRadius(GetPawn()->GetActorLocation(), 1000.0f, NavLocation);
+	if(result)
+	{ 
+		TargetLocation = NavLocation.Location;
+		MoveToLocation(TargetLocation);
+	}
 
+	return result;
 }

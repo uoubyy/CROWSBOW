@@ -69,6 +69,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = Health)
 	float CurHealth;
 
+	UPROPERTY(EditDefaultsOnly, Category = Ability)
+	float MaxAttackDistance = 150.0f;
+
 	FVector SensedLocation = FVector::ZeroVector;
 
 	UPROPERTY(VisibleAnywhere, Category = Enemy)
@@ -78,4 +81,23 @@ protected:
 
 	UFUNCTION()
 	virtual void TurnToSenseActor();
+
+	float StateDuration; // random number
+
+	float CurStateTime;
+
+	FTimerHandle ChangeStateHandle;
+
+	virtual void GenerateNewState() {}
+
+	FTimerHandle ChangeEnemyStateHandle;
+
+	virtual void ChangeStateInto(EEnemyState newState) { CurEnemyState = newState; }
+
+	bool DamageImmunity = false;
+
+	UFUNCTION()
+	void UnlockDamageImmunity() { DamageImmunity = false; }
+
+	FTimerHandle DamageImmunityTimeHandler;
 };
