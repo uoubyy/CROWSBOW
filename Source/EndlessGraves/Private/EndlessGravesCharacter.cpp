@@ -327,11 +327,8 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 
 	if (!DamageImmunity)
 	{
-
+		DamageImmunity = true;
 		IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
-		//FString weaponTypeName;
-		//GetEnumValueAsString< EDamageType>(weaponTypeName, Weapon->GetDamageType());
-		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesCharacter OnBeginOverlap %s"), *(weaponTypeName)));
 
 		if (Weapon)
 		{
@@ -352,6 +349,8 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				CamShakeEffect(1.0f);
 				break;
 			}
+
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.5f, false);
 		}
 		else
 		{
@@ -363,6 +362,8 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 			{
 				CurHealth -= Boss->GetDamage();
 			}
+
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.5f, false);
 		}
 	}
 	UpdateHUD();

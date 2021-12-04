@@ -194,4 +194,6 @@ private:
 	UFUNCTION()
 	void UnlockDamageImmunity() { DamageImmunity = false;}
 
+	FTimerHandle DamageImmunityTimeHandler;
+
 };

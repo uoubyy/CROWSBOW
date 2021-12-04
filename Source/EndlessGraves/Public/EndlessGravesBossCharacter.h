@@ -42,5 +42,5 @@ public:
 	void GenerateNewState();
 
 	UFUNCTION(BlueprintCallable, Category = Boss)
-	float GetDamage() { return 10.0f;}
+	float GetDamage() { return Damage;}
 };
