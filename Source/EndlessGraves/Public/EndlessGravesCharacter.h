@@ -126,8 +126,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Weapon)
 	TSubclassOf<class UCameraShakeBase> CamShake;
 
+	UPROPERTY(EditAnywhere, Category = Enemy)
+	TArray<FString> BossDamageBoneList;
+
 	UFUNCTION()
 	void WeaponResume();
+
+	UFUNCTION(BlueprintCallable, Category = Damage)
+	void ChangeDamageCoe(float value);
 
 	FTimerHandle WeaponResumeHandler;
 
@@ -155,6 +161,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SwitchWeaponTo(EWeaponType weaponType);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSwitchWeaponBP();
+
 	UFUNCTION(BlueprintCallable)
 	void OnStartGame();
 
@@ -179,4 +188,12 @@ private:
 
 	UFUNCTION()
 	void CamShakeEffect(float Scale);
+
+	bool DamageImmunity = false;
+
+	UFUNCTION()
+	void UnlockDamageImmunity() { DamageImmunity = false;}
+
+	FTimerHandle DamageImmunityTimeHandler;
+
 };

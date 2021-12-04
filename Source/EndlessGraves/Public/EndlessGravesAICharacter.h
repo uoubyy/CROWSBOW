@@ -75,6 +75,4 @@ protected:
 
 	UFUNCTION()
 	virtual void TurnToSenseActor();
-
-
 };

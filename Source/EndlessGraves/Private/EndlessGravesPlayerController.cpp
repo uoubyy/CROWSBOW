@@ -119,3 +119,25 @@ void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
 		}
 	}
 }
+
+
+void AEndlessGravesPlayerController::OnGameOver()
+{
+	if (GameOverMenuInstance && GameOverMenuInstance->IsInViewport())
+		return;
+
+	GameOverMenuInstance = GameOverMenuInstance == nullptr ? CreateWidget<UUserWidget>(this, GameOverMenuClass) : GameOverMenuInstance;
+	if (GameOverMenuInstance)
+	{
+		GameOverMenuInstance->AddToViewport(100);
+
+		bShowMouseCursor = true;
+		SetInputMode(FInputModeUIOnly());
+
+		// Single-player only
+		if (GetWorld()->IsNetMode(NM_Standalone))
+		{
+			UGameplayStatics::SetGamePaused(this, true);
+		}
+	}
+}

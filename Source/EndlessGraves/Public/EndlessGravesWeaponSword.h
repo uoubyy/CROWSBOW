@@ -17,6 +17,9 @@ public:
 	// Sets default values for this actor's properties
 	AEndlessGravesWeaponSword();
 
+	UFUNCTION(BlueprintCallable, Category = Damage)
+	void ChangeDamageCoe(float value) { DamageCoefficient = value; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -33,6 +36,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Damage)
 	float Damage;
 
+	float DamageCoefficient = 1.0f;
 public:	
 
 	virtual float GetDamage() const override;
