@@ -66,15 +66,18 @@ void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesSkeleton::OnBeginOverlap %s"), *(OtherActor->GetName())));
 
 	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
-	if (Weapon)
+	if (Weapon && DamageImmunity == false)
 	{
-		CurHealth -= Weapon->GetDamage();
-		FVector LaunchVeolocity = GetActorForwardVector() * 1000.0f;
-		LaunchCharacter(LaunchVeolocity, true, false);
+		CurHealth -= Weapon->GetDamage() * 0.6;
+		//FVector LaunchVeolocity = GetActorForwardVector() * 1000.0f;
+		//LaunchCharacter(LaunchVeolocity, true, false);
+
+		GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesSkeleton::UnlockDamageImmunity, 0.5f, false);
 	}
 
 	UpdateAIHUD();
 }
+
 //
 //void AEndlessGravesSkeleton::OnExitOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 //{

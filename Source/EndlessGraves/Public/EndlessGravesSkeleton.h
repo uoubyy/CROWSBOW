@@ -46,4 +46,11 @@ protected:
 private:
 
 	FVector TargetDirection;
+
+	bool DamageImmunity = false;
+
+	UFUNCTION()
+	void UnlockDamageImmunity() { DamageImmunity = false; }
+
+	FTimerHandle DamageImmunityTimeHandler;
 };

@@ -350,7 +350,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				break;
 			}
 
-			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.5f, false);
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.3f, false);
 		}
 		else
 		{
@@ -363,7 +363,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				CurHealth -= Boss->GetDamage();
 			}
 
-			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.5f, false);
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.3f, false);
 		}
 	}
 	UpdateHUD();

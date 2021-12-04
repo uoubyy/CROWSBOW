@@ -26,13 +26,17 @@ protected:
 
 	virtual void OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume) override;
 
+	virtual void OnPawnLost() override;
+
 	virtual void OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
 	virtual void TurnToSenseActor() override;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = Boss)
-	float GetRotationZ() {return 5.0f;}
+	float GetRotationZ() {return RotationZ;}
+
+	float RotationZ = 0.0f;
 
 	// random from 3.0 to 5.0
 	float StateDuration;
@@ -42,5 +46,7 @@ public:
 	void GenerateNewState();
 
 	UFUNCTION(BlueprintCallable, Category = Boss)
-	float GetDamage() { return Damage;}
+	float GetDamage();
+
+	bool CanAttackPlayer = false;
 };

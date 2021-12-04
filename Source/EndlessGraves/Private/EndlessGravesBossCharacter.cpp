@@ -5,6 +5,7 @@
 #include "EndlessGravesWeaponInterface.h"
 #include "Perception/PawnSensingComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AEndlessGravesBossCharacter::AEndlessGravesBossCharacter() : AEndlessGravesAICharacter()
@@ -21,35 +22,61 @@ void AEndlessGravesBossCharacter::BeginPlay()
 	PawnSensingComp->OnHearNoise.AddDynamic(this, &AEndlessGravesBossCharacter::OnNoiseHeard);
 	GetMesh()->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesBossCharacter::OnBeginOverlap);
 
-	GenerateNewState();
+	HealthWidgetComp->SetVisibility(true);
+	CurEnemyState = EEnemyState::ES_Idle;
 }
 
 void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
 {
-	CurStateTime += DeltaSeconds;
-	if(CurStateTime > StateDuration)
-		GenerateNewState();
+	Super::Tick(true);
+	if(CanAttackPlayer)
+	{ 
+		CurStateTime += DeltaSeconds;
+		if (CurStateTime > StateDuration)
+			GenerateNewState();
+	}
 }
 
 void AEndlessGravesBossCharacter::GenerateNewState()
 {
-	StateDuration = FMath::RandRange(3.0f, 5.0f);
+	StateDuration = FMath::RandRange(5.0f, 10.0f);
 	CurStateTime = 0.0f;
 
-	CurEnemyState = static_cast<EEnemyState>(FMath::RandRange(0, 3));
+	if(CurEnemyState != EEnemyState::ES_Idle)
+		CurEnemyState = EEnemyState::ES_Idle;
+	else
+		CurEnemyState = static_cast<EEnemyState>(FMath::RandRange(0, 3));
+}
+
+float AEndlessGravesBossCharacter::GetDamage()
+{
+	if (CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
+	{
+		return Damage;
+	}
+
+	return 0.0f;
 }
 
 void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
 {
-	Super::OnPawnSeen(SeenPawn);
+	// Super::OnPawnSeen(SeenPawn);
 }
 
 void AEndlessGravesBossCharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
-	Super::OnNoiseHeard(HeardPawn, Location, Volume);
+	// Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
 	// TODO debug
 	OnPawnSeen(HeardPawn);
+
+	CanAttackPlayer = true;
+}
+
+void AEndlessGravesBossCharacter::OnPawnLost()
+{
+	CurEnemyState = EEnemyState::ES_Idle;
+	CanAttackPlayer = false;
 }
 
 void AEndlessGravesBossCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
