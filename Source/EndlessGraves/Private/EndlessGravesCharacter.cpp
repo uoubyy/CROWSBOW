@@ -252,8 +252,8 @@ void AEndlessGravesCharacter::OnFireArrow()
 			// spawn the projectile at the muzzle
 			AEndlessGravesProjectile* arrow = World->SpawnActor<AEndlessGravesProjectile>(ArrowClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 
-			if(arrow == nullptr)
-				GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("EndlessGravesCharacter::OnFireArrow failed"));
+			//if(arrow == nullptr)
+			//	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("EndlessGravesCharacter::OnFireArrow failed"));
 		}
 	}
 }
@@ -350,7 +350,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				break;
 			}
 
-			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.3f, false);
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.2f, false);
 		}
 		else
 		{
@@ -363,7 +363,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 				CurHealth -= Boss->GetDamage();
 			}
 
-			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.3f, false);
+			GetWorldTimerManager().SetTimer(DamageImmunityTimeHandler, this, &AEndlessGravesCharacter::UnlockDamageImmunity, 0.2f, false);
 		}
 	}
 	UpdateHUD();

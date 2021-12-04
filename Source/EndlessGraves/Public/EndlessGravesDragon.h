@@ -40,4 +40,11 @@ private:
 
 	UPROPERTY()
 	class AEndlessGravesFireBall* FireBallActor = nullptr;
+
+	bool DamageImmunity = false;
+
+	UFUNCTION()
+	void UnlockDamageImmunity() { DamageImmunity = false; }
+
+	FTimerHandle DamageImmunityTimeHandler;
 };

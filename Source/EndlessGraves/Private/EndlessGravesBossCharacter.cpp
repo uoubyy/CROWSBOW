@@ -39,7 +39,7 @@ void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
 
 void AEndlessGravesBossCharacter::GenerateNewState()
 {
-	StateDuration = FMath::RandRange(5.0f, 10.0f);
+	StateDuration = FMath::RandRange(3.0f, 5.0f);
 	CurStateTime = 0.0f;
 
 	if(CurEnemyState != EEnemyState::ES_Idle)
@@ -50,12 +50,13 @@ void AEndlessGravesBossCharacter::GenerateNewState()
 
 float AEndlessGravesBossCharacter::GetDamage()
 {
-	if (CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
-	{
-		return Damage;
-	}
+	//if (CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
+	//{
+	//	return Damage;
+	//}
 
-	return 0.0f;
+	//return 0.0f;
+	return Damage;
 }
 
 void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
@@ -65,12 +66,17 @@ void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
 
 void AEndlessGravesBossCharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
-	// Super::OnNoiseHeard(HeardPawn, Location, Volume);
+	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
 	// TODO debug
 	OnPawnSeen(HeardPawn);
 
-	CanAttackPlayer = true;
+	if((Location - GetActorLocation()).Size() <= 1000.0f && CanAttackPlayer == false)
+	{ 
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("AEndlessGravesBossCharacter change into attack"));
+		CurEnemyState = EEnemyState::ES_Attack1;
+		CanAttackPlayer = true;
+	}
 }
 
 void AEndlessGravesBossCharacter::OnPawnLost()
