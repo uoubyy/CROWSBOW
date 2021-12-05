@@ -27,7 +27,7 @@ void AEndlessGravesDragon::BeginPlay()
 
 void AEndlessGravesDragon::OnPawnSeen(APawn* SeenPawn)
 {
-	// DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 
 	Super::OnPawnSeen(SeenPawn);
 
@@ -44,9 +44,6 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
 	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
-
-	// TODO fix unseen bug
-	OnPawnSeen(HeardPawn);
 }
 
 void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)

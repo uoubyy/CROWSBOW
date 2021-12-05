@@ -54,9 +54,6 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 void AEndlessGravesSkeleton::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
 	Super::OnNoiseHeard(HeardPawn, Location, Volume);
-
-	// TODO debug
-	OnPawnSeen(HeardPawn);
 }
 
 void AEndlessGravesSkeleton::AttackPlayer(FVector PlayerLocation)
