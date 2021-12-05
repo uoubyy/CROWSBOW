@@ -43,6 +43,9 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 {
 	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
+	if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
+		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesDragon::TurnToSenseActor, 0.05f, true);
+
 	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 }
 

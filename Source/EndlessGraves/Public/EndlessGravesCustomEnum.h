@@ -30,6 +30,7 @@ enum class EEnemyState : uint8
 	ES_Running	UMETA(DisplayName = "Running"),
 	ES_Attack1	UMETA(DisplayName = "Attack 1"),
 	ES_Attack2	UMETA(DisplayName = "Attack 2"),
+	ES_Alert	UMETA(DisplayName = "Guard"),
 	ES_None		UMETA(DisplayName = "None")
 };
 

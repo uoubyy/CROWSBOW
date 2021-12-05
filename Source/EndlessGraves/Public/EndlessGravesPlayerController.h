@@ -59,5 +59,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Twitch")
 	void SpawnExtraHealthPowerUp();
 
+	UFUNCTION(BlueprintCallable, Category = "Debug")
+	void SummonSkeleton() { SummonEnemy(EEnemyType::EET_Skeleton, 1); }
+
+	UFUNCTION(BlueprintCallable, Category = "Debug")
+	void SummonDragon() { SummonEnemy(EEnemyType::EET_Dragon, 1);}
+
 	virtual void BeginPlay() override;
 };

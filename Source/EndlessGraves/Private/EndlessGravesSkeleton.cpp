@@ -10,6 +10,8 @@
 
 #include "Kismet/KismetMathLibrary.h"
 
+#include "DrawDebugHelpers.h"
+
 AEndlessGravesSkeleton::AEndlessGravesSkeleton() : AEndlessGravesAICharacter()
 {
 }
@@ -31,6 +33,8 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 {
 	Super::OnPawnSeen(SeenPawn);
 
+	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+
 	TargetDirection = SensedLocation - GetActorLocation();
 	float Distance = TargetDirection.Size();
 
@@ -45,7 +49,7 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 		ChangeStateInto(EEnemyState::ES_Running);
 		AEndlessGravesAIController* AIController = Cast<AEndlessGravesAIController>(GetController());
 		if (AIController)
-			AIController->ChasingPlayer(SensedLocation);
+			AIController->ChasingPlayer(SeenPawn->GetActorLocation());
 	}
 
 	TargetDirection.Normalize();
@@ -54,6 +58,13 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 void AEndlessGravesSkeleton::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
 	Super::OnNoiseHeard(HeardPawn, Location, Volume);
+
+	ChangeStateInto(EEnemyState::ES_Alert);
+
+	if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
+		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesSkeleton::TurnToSenseActor, 0.05f, true);
+
+	DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 }
 
 void AEndlessGravesSkeleton::AttackPlayer(FVector PlayerLocation)
@@ -78,27 +89,36 @@ void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedCompo
 
 void AEndlessGravesSkeleton::ChangeStateInto(EEnemyState newState)
 {
+	if(CurEnemyState == newState)
+		return;
+
+	float leftTime = GetWorldTimerManager().GetTimerElapsed(ChangeStateHandle);
+
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Change from %s Into %s, duration %f"), *(GetEnumValueAsString<EEnemyState>("EEnemyState", CurEnemyState)),
+		*(GetEnumValueAsString<EEnemyState>("EEnemyState", newState)), leftTime));
+
 	Super::ChangeStateInto(newState);
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("ChangeStateInto %s"), *(GetEnumValueAsString<EEnemyState>("EEnemyState", CurEnemyState))));
-
 	AEndlessGravesAIController* PController = Cast<AEndlessGravesAIController>(GetController());
-	PController->StopMovement();
 
 	switch (newState)
 	{
 	case EEnemyState::ES_Idle:
-		GetWorldTimerManager().SetTimer(ChangeStateHandle, this, &AEndlessGravesSkeleton::GenerateNewState, StateDuration, false);
+		PController->StopMovement();
+		GetWorldTimerManager().SetTimer(ChangeStateHandle, this, &AEndlessGravesSkeleton::GenerateNewState, StateDuration, false, StateDuration);
 		break;
 	case EEnemyState::ES_Wander:
-		GetWorldTimerManager().SetTimer(ChangeStateHandle, this, &AEndlessGravesSkeleton::GenerateNewState, StateDuration, false);
+		GetWorldTimerManager().SetTimer(ChangeStateHandle, this, &AEndlessGravesSkeleton::GenerateNewState, StateDuration, false, StateDuration);
 		if(PController->TryStartWander() == false)
 			CurEnemyState = EEnemyState::ES_Idle;
 		break;
 	case EEnemyState::ES_Running:
 	case EEnemyState::ES_Attack1:
 	case EEnemyState::ES_Attack2:
+	case EEnemyState::ES_Alert:
 	{
+		GetWorldTimerManager().ClearTimer(ChangeStateHandle);
+		PController->StopMovement();
 		break;
 	}
 	case EEnemyState::ES_None:

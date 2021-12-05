@@ -15,7 +15,9 @@ void AEndlessGravesPlayerController::SetupInputComponent()
 
 	InputComponent->BindAction("Pause", IE_Pressed, this, &AEndlessGravesPlayerController::OnPauseGame);
 	InputComponent->BindAction("PowerUpHealth", IE_Pressed, this, &AEndlessGravesPlayerController::SpawnExtraHealthPowerUp);
-	// InputComponent->BindAction("SummonEnemy", IE_Pressed, this, &AEndlessGravesPlayerController::SummonEnemy);
+
+	InputComponent->BindAction("SummonDragon", IE_Pressed, this, &AEndlessGravesPlayerController::SummonDragon);
+	InputComponent->BindAction("SummonSkeleton", IE_Pressed, this, &AEndlessGravesPlayerController::SummonSkeleton);
 }
 
 void AEndlessGravesPlayerController::BeginPlay()

@@ -183,16 +183,14 @@ void AEndlessGravesCharacter::MoveForward(float Value)
 
 void AEndlessGravesCharacter::DashForward()
 {
-	FVector LaunchVeolocity = GetActorForwardVector() * 3000.0f;
-	LaunchCharacter(LaunchVeolocity, true, false);
-
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-
-	GetWorldTimerManager().SetTimer(DashEffectTimeHandle, this, &AEndlessGravesCharacter::DashEffectExit, 0.5f, false);
+	GetCharacterMovement()->MaxWalkSpeed = 1200.0f;
+	GetWorldTimerManager().SetTimer(DashEffectTimeHandle, this, &AEndlessGravesCharacter::DashEffectExit, 0.3f, false);
 }
 
 void AEndlessGravesCharacter::DashEffectExit()
 {
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 }
 

@@ -70,14 +70,16 @@ void AEndlessGravesAICharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Lo
 	// for now, only player makes noise
 	SensedLocation = Location;
 	// if the timer exists and is active
-	if(GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
-		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesAICharacter::TurnToSenseActor, 0.05f, true);
+	//if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
+	//	GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesAICharacter::TurnToSenseActor, 0.05f, true);
 
 	HealthWidgetComp->SetVisibility(true);
 }
 
 void AEndlessGravesAICharacter::OnPawnLost()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("On Pawn Lost"));
+
 	ChangeStateInto(EEnemyState::ES_Idle);
 	HealthWidgetComp->SetVisibility(false);
 }
@@ -89,13 +91,11 @@ void AEndlessGravesAICharacter::AttackPlayer(FVector PlayerLocation)
 
 void AEndlessGravesAICharacter::TurnToSenseActor()
 {
-	FVector direction = SensedLocation - GetActorLocation();
-	direction.Normalize();
-	FRotator rotation = direction.Rotation();
-	rotation.Roll = 0.0f;
-	rotation.Pitch = 0.0f; // only rotation around the Z axis
+	FRotator Rot = FRotationMatrix::MakeFromX(SensedLocation - GetActorLocation()).Rotator();
+	Rot.Roll = 0.0f;
+	Rot.Pitch = 0.0f; // only rotation around the Z axis
 
-	SetActorRotation(FMath::Lerp(GetActorRotation(), direction.Rotation(), 0.05f));
+	SetActorRotation(FMath::Lerp(GetActorRotation(), Rot, 0.05f));
 
 	if (PawnSensingComp->CanSenseAnything() == false)
 	{
