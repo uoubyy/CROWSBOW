@@ -33,12 +33,10 @@ void AEndlessGravesSkeleton::OnPawnSeen(APawn* SeenPawn)
 {
 	Super::OnPawnSeen(SeenPawn);
 
-	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+	// DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 
 	TargetDirection = SensedLocation - GetActorLocation();
 	float Distance = TargetDirection.Size();
-
-	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("AEndlessGravesSkeleton OnPawnSeen %f"), Distance));
 
 	if (Distance <= MaxAttackDistance)
 	{
@@ -64,7 +62,7 @@ void AEndlessGravesSkeleton::OnNoiseHeard(APawn* HeardPawn, const FVector& Locat
 	if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
 		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesSkeleton::TurnToSenseActor, 0.05f, true);
 
-	DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
+	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 }
 
 void AEndlessGravesSkeleton::AttackPlayer(FVector PlayerLocation)

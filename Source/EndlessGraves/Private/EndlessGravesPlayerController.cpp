@@ -123,23 +123,46 @@ void AEndlessGravesPlayerController::SummonEnemy(EEnemyType enemyType, int num)
 }
 
 
-void AEndlessGravesPlayerController::OnGameOver()
+void AEndlessGravesPlayerController::OnGameOver(bool result)
 {
-	if (GameOverMenuInstance && GameOverMenuInstance->IsInViewport())
-		return;
+	if(result == false)
+	{ 
+		if (GameFailMenuInstance && GameFailMenuInstance->IsInViewport())
+			return;
 
-	GameOverMenuInstance = GameOverMenuInstance == nullptr ? CreateWidget<UUserWidget>(this, GameOverMenuClass) : GameOverMenuInstance;
-	if (GameOverMenuInstance)
-	{
-		GameOverMenuInstance->AddToViewport(100);
-
-		bShowMouseCursor = true;
-		SetInputMode(FInputModeUIOnly());
-
-		// Single-player only
-		if (GetWorld()->IsNetMode(NM_Standalone))
+		GameFailMenuInstance = GameFailMenuInstance == nullptr ? CreateWidget<UUserWidget>(this, GameFailMenuClass) : GameFailMenuInstance;
+		if (GameFailMenuInstance)
 		{
-			UGameplayStatics::SetGamePaused(this, true);
+			GameFailMenuInstance->AddToViewport(100);
+
+			bShowMouseCursor = true;
+			SetInputMode(FInputModeUIOnly());
+
+			// Single-player only
+			if (GetWorld()->IsNetMode(NM_Standalone))
+			{
+				UGameplayStatics::SetGamePaused(this, true);
+			}
+		}
+	}
+	else
+	{
+		if (GameSuccessMenuInstance && GameSuccessMenuInstance->IsInViewport())
+			return;
+
+		GameSuccessMenuInstance = GameSuccessMenuInstance == nullptr ? CreateWidget<UUserWidget>(this, GameSuccessMenuClass) : GameSuccessMenuInstance;
+		if (GameSuccessMenuInstance)
+		{
+			GameSuccessMenuInstance->AddToViewport(100);
+
+			bShowMouseCursor = true;
+			SetInputMode(FInputModeUIOnly());
+
+			// Single-player only
+			if (GetWorld()->IsNetMode(NM_Standalone))
+			{
+				UGameplayStatics::SetGamePaused(this, true);
+			}
 		}
 	}
 }

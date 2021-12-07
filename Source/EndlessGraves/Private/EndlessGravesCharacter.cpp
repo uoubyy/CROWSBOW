@@ -359,7 +359,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 		else
 		{
 			// check hit result
-			// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter Bone Name %s"), *(SweepResult.BoneName.ToString())));
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter Bone Name %s"), *(SweepResult.BoneName.ToString())));
 			// TODO configurable
 			AEndlessGravesBossCharacter* Boss = Cast<AEndlessGravesBossCharacter>(OtherActor);
 			if (Boss && BossDamageBoneList.Contains(SweepResult.BoneName.ToString()))
@@ -408,7 +408,7 @@ void AEndlessGravesCharacter::UpdateHUD()
 	{
 		AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
 		if (PController)
-			PController->OnGameOver();
+			PController->OnGameOver(false);
 	}
 
 	CurHealth = FMath::Clamp(CurHealth, 0.0f, MaxHealth);

@@ -7,6 +7,12 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 
+#include "EndlessGravesAIController.h"
+#include "EndlessGravesPlayerController.h"
+#include "Kismet/GameplayStatics.h"
+
+#include "DrawDebugHelpers.h"
+
 // Sets default values
 AEndlessGravesBossCharacter::AEndlessGravesBossCharacter() : AEndlessGravesAICharacter()
 {
@@ -32,7 +38,10 @@ void AEndlessGravesBossCharacter::Tick(float DeltaSeconds)
 	{
 		CurStateTime += DeltaSeconds;
 		if (CurStateTime > StateDuration)
-			GenerateNewState();
+		{
+			float posibility = FMath::RandRange(0.0f, 1.0f);
+			ChangeStateInto(posibility > 0.5f ? EEnemyState::ES_Attack1 : EEnemyState::ES_Attack2);
+		}
 	}
 }
 
@@ -48,33 +57,51 @@ void AEndlessGravesBossCharacter::GenerateNewState()
 
 float AEndlessGravesBossCharacter::GetDamage()
 {
-	//if (CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
-	//{
-	//	return Damage;
-	//}
-
-	//return 0.0f;
-	return Damage;
+	if(CurEnemyState == EEnemyState::ES_Attack1 || CurEnemyState == EEnemyState::ES_Attack2)
+		return Damage;
+	else
+		return 0.0f;
 }
 
 void AEndlessGravesBossCharacter::OnPawnSeen(APawn* SeenPawn)
 {
-	// Super::OnPawnSeen(SeenPawn);
+	Super::OnPawnSeen(SeenPawn);
+
+	float Distance = (SensedLocation - GetActorLocation()).Size();
+
+	if (Distance <= MaxAttackDistance)
+	{
+		if (CanAttackPlayer == false)
+		{
+			StateDuration = FMath::RandRange(3.0f, 5.0f);
+			float posibility = FMath::RandRange(0.0f, 1.0f);
+			ChangeStateInto(posibility > 0.5f ? EEnemyState::ES_Attack1 : EEnemyState::ES_Attack2);
+
+			DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+
+			CanAttackPlayer = true;
+		}
+	}
+	else
+	{
+		CanAttackPlayer = false;
+		ChangeStateInto(EEnemyState::ES_Running);
+		AEndlessGravesAIController* AIController = Cast<AEndlessGravesAIController>(GetController());
+		if (AIController)
+			AIController->ChasingPlayer(SeenPawn->GetActorLocation());
+	}
 }
 
 void AEndlessGravesBossCharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
 {
 	Super::OnNoiseHeard(HeardPawn, Location, Volume);
 
-	// TODO debug
-	OnPawnSeen(HeardPawn);
+	ChangeStateInto(EEnemyState::ES_Alert);
 
-	if((Location - GetActorLocation()).Size() <= MaxAttackDistance && CanAttackPlayer == false)
-	{ 
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("AEndlessGravesBossCharacter change into attack"));
-		ChangeStateInto(EEnemyState::ES_Attack1);
-		CanAttackPlayer = true;
-	}
+	if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
+		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesBossCharacter::TurnToSenseActor, 0.05f, true);
+
+	DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 }
 
 void AEndlessGravesBossCharacter::OnPawnLost()
@@ -101,14 +128,13 @@ void AEndlessGravesBossCharacter::OnBeginOverlap(UPrimitiveComponent* Overlapped
 	}
 }
 
-void AEndlessGravesBossCharacter::TurnToSenseActor()
+void AEndlessGravesBossCharacter::UpdateAIHUD()
 {
-	FVector direction = SensedLocation - GetActorLocation();
-	direction.Normalize();
-	FRotator rotation = direction.Rotation();
-	rotation.Roll = 0.0f;
-	rotation.Pitch = 0.0f; // only rotation around the Z axis
-
-	FName boneName("Head_M");
-	//GetMesh()->SetBoneRotationByName(boneName, r, EBoneSpaces::ComponentSpace);
+	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if (PController)
+	{
+		PController->OnGameOver(true);
+	}
+	
+	Super::UpdateAIHUD();
 }
