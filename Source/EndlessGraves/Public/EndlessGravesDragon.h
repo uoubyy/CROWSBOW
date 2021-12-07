@@ -39,8 +39,8 @@ private:
 	UPROPERTY()
 	class AEndlessGravesFireBall* FireBallActor = nullptr;
 
-	// UPROPERTY()
-	static TArray<class AEndlessGravesFireBall*> FireBallList;
+	UPROPERTY()
+	TArray<class AEndlessGravesFireBall*> FireBallList;
 
 	class AEndlessGravesFireBall* GetAvailableFireBall();
 };

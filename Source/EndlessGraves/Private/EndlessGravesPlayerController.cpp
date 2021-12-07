@@ -70,7 +70,8 @@ void AEndlessGravesPlayerController::OnResumeGame()
 
 void AEndlessGravesPlayerController::OnRestartGame()
 {
-
+	UGameplayStatics::SetGamePaused(this, false);
+	SetInputMode(FInputModeGameOnly());
 }
 
 void AEndlessGravesPlayerController::OnStartGame()
