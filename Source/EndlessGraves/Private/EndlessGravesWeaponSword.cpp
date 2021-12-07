@@ -30,7 +30,7 @@ AEndlessGravesWeaponSword::AEndlessGravesWeaponSword()
 void AEndlessGravesWeaponSword::BeginPlay()
 {
 	Super::BeginPlay();
-	//Traileffect->SetVisibility(false);
+	Traileffect->SetVisibility(false);
 	//CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesWeaponSword::OnBeginOverlap);
 	
 }
@@ -53,11 +53,12 @@ void AEndlessGravesWeaponSword::ActiveSword(bool enable)
 
 void AEndlessGravesWeaponSword::ChangeDamageCoe(float value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("EndlessGravesWeaponSword::ChangeDamageCoe %f"), value));
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("EndlessGravesWeaponSword::ChangeDamageCoe %f"), value));
 	DamageCoefficient = value; 
 }
 
 void AEndlessGravesWeaponSword::ToggleTrailEffect(bool value)
 {
+	// debug
 	Traileffect->SetVisibility(value);
 }

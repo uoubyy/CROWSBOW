@@ -338,7 +338,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 	{
 		AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
 		if (PController)
-			PController->OnGameOver(false);
+			PController->OnCollectGem(Gem->GetGemType());
 		return;
 	}
 

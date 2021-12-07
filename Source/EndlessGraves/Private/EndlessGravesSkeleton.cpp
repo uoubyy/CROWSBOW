@@ -72,7 +72,7 @@ void AEndlessGravesSkeleton::AttackPlayer(FVector PlayerLocation)
 
 void AEndlessGravesSkeleton::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesSkeleton::OnBeginOverlap %s"), *(OtherActor->GetName())));
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesSkeleton::OnBeginOverlap %s"), *(OtherActor->GetName())));
 
 	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
 	if (Weapon && DamageImmunity == false)
@@ -92,8 +92,8 @@ void AEndlessGravesSkeleton::ChangeStateInto(EEnemyState newState)
 
 	float leftTime = GetWorldTimerManager().GetTimerElapsed(ChangeStateHandle);
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Change from %s Into %s, duration %f"), *(GetEnumValueAsString<EEnemyState>("EEnemyState", CurEnemyState)),
-		*(GetEnumValueAsString<EEnemyState>("EEnemyState", newState)), leftTime));
+	/* GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("Change from %s Into %s, duration %f"), *(GetEnumValueAsString<EEnemyState>("EEnemyState", CurEnemyState)),
+		*(GetEnumValueAsString<EEnemyState>("EEnemyState", newState)), leftTime));*/
 
 	Super::ChangeStateInto(newState);
 

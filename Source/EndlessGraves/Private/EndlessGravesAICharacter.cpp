@@ -78,7 +78,7 @@ void AEndlessGravesAICharacter::OnNoiseHeard(APawn* HeardPawn, const FVector& Lo
 
 void AEndlessGravesAICharacter::OnPawnLost()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("On Pawn Lost"));
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("On Pawn Lost"));
 
 	ChangeStateInto(EEnemyState::ES_Idle);
 	HealthWidgetComp->SetVisibility(false);
@@ -109,7 +109,7 @@ void AEndlessGravesAICharacter::UpdateAIHUD()
 	ensure(HealthBar != nullptr);
 	HealthBar->SetHealthPercentage(CurHealth / MaxHealth);
 
-	if (CurHealth <= 0)
+	if (CurHealth <= 0.0f)
 		Destroy();
 }
 

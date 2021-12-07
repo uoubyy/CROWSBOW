@@ -130,11 +130,14 @@ void AEndlessGravesBossCharacter::OnBeginOverlap(UPrimitiveComponent* Overlapped
 
 void AEndlessGravesBossCharacter::UpdateAIHUD()
 {
-	AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	if (PController)
-	{
-		PController->OnGameOver(true);
-	}
-	
 	Super::UpdateAIHUD();
+
+	if(CurHealth <= 0.0f)
+	{ 
+		AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if (PController)
+		{
+			PController->OnGameOver(true);
+		}
+	}
 }

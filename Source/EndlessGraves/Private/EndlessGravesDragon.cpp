@@ -96,8 +96,8 @@ void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 			FireBallList.Add(FireBallActor);
 		}
 	}
-
-	FireBallActor->Active(SocketLocation, direction);
+	if(FireBallActor)
+		FireBallActor->Active(SocketLocation, direction);
 }
 
 void AEndlessGravesDragon::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
