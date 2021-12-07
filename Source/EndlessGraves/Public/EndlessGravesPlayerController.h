@@ -42,6 +42,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Twitch")
 	TArray<class AActor*> AllTombs;
 
+	UPROPERTY()
+	TSet<EGemType> CollectedGems;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<class AEndlessGravesGem> GemClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = UI)
+	TSubclassOf<class AEndlessGravesBossCharacter> BossClass;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void OnPauseGame();
@@ -69,6 +78,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Debug")
 	void SummonDragon() { SummonEnemy(EEnemyType::EET_Dragon, 1);}
+
+	UFUNCTION(BlueprintCallable, Category = Gem)
+	void SpawnGem();
+
+	void OnCollectGem(EGemType GemType);
+
+	UFUNCTION(BlueprintCallable)
+	void SummonBoss();
 
 	virtual void BeginPlay() override;
 };

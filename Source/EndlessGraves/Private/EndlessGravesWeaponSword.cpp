@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AEndlessGravesWeaponSword::AEndlessGravesWeaponSword()
@@ -21,20 +22,22 @@ AEndlessGravesWeaponSword::AEndlessGravesWeaponSword()
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DStaticMeshComponent"));
 	MeshComponent->AttachToComponent(RootScene, FAttachmentTransformRules::KeepRelativeTransform);
 
+	Traileffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TrailEffect"));
+	Traileffect->AttachToComponent(RootScene, FAttachmentTransformRules::KeepRelativeTransform);
 }
 
 // Called when the game starts or when spawned
 void AEndlessGravesWeaponSword::BeginPlay()
 {
 	Super::BeginPlay();
-
+	//Traileffect->SetVisibility(false);
 	//CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &AEndlessGravesWeaponSword::OnBeginOverlap);
 	
 }
 
 float AEndlessGravesWeaponSword::GetDamage() const
 {
-	return Damage *  DamageCoefficient;
+	return Damage * DamageCoefficient;
 }
 
 void AEndlessGravesWeaponSword::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -52,4 +55,9 @@ void AEndlessGravesWeaponSword::ChangeDamageCoe(float value)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, FString::Printf(TEXT("EndlessGravesWeaponSword::ChangeDamageCoe %f"), value));
 	DamageCoefficient = value; 
+}
+
+void AEndlessGravesWeaponSword::ToggleTrailEffect(bool value)
+{
+	Traileffect->SetVisibility(value);
 }

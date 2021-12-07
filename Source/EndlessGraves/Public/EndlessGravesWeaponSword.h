@@ -20,6 +20,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Damage)
 	void ChangeDamageCoe(float value);// { DamageCoefficient = value; }
 
+	UFUNCTION(BlueprintCallable)
+	void ToggleTrailEffect(bool value);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -32,6 +35,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	class UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	class UParticleSystemComponent* Traileffect;
 
 	UPROPERTY(EditDefaultsOnly, Category = Damage)
 	float Damage;

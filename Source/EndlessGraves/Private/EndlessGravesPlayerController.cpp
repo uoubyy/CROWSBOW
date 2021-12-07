@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "EndlessGravesExtraHealth.h"
 #include "EndlessGravesTomb.h"
+#include "EndlessGravesGem.h"
+#include "EndlessGravesBossCharacter.h"
 
 #include "Math/UnrealMathUtility.h"
 
@@ -164,5 +166,55 @@ void AEndlessGravesPlayerController::OnGameOver(bool result)
 				UGameplayStatics::SetGamePaused(this, true);
 			}
 		}
+	}
+}
+
+void AEndlessGravesPlayerController::SpawnGem()
+{
+	FVector GemSpawnLocation = GetPawn()->GetActorLocation();
+	float xOffset = FMath::RandRange(-1.0f, 1.0f);
+	float yOffset = FMath::RandRange(-1.0f, 1.0f);
+	GemSpawnLocation += FVector(xOffset, yOffset, 0.0f) * 300.0f;
+
+
+	EGemType NewGemType = EGemType::EGT_Blue;
+	for (EGemType type : TEnumRange<EGemType>())
+	{
+		if(!CollectedGems.Contains(type))
+		{
+			NewGemType = type;
+		}
+	}
+
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		AEndlessGravesGem* Gem = World->SpawnActor<AEndlessGravesGem>(GemClass, GemSpawnLocation, FRotator::ZeroRotator, ActorSpawnParams);
+		Gem->Init(NewGemType);
+	}
+}
+
+void AEndlessGravesPlayerController::OnCollectGem(EGemType GemType)
+{
+	CollectedGems.Add(GemType);
+
+	if (CollectedGems.Num() == 5)
+	{
+		SummonBoss();
+	}
+}
+
+void AEndlessGravesPlayerController::SummonBoss()
+{
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	UWorld* const World = GetWorld();
+	if (World != nullptr)
+	{
+		AEndlessGravesBossCharacter* Boss = World->SpawnActor<AEndlessGravesBossCharacter>(BossClass, FVector(-7317.073730f, 835.087219f, 694.806580f), FRotator::ZeroRotator, ActorSpawnParams);
 	}
 }

@@ -50,6 +50,18 @@ enum class EEnemyType : uint8
 	EET_None		UMETA(DisplayName = "None")
 };
 
+UENUM(BlueprintType)
+enum class EGemType : uint8
+{
+	EGT_Blue		UMETA(DisplayName = "Gem Blue"),
+	EGT_Yellow		UMETA(DisplayName = "Gem Yellow"),
+	EGT_Red			UMETA(DisplayName = "Gem Red"),
+	EGT_Purple		UMETA(DisplayName = "Gem Purple"),
+	EGT_Green		UMETA(DisplayName = "Gem Green")
+};
+
+ENUM_RANGE_BY_COUNT(EGemType, EGemType::EGT_Green)
+
 template<typename TEnum>
 static FORCEINLINE FString GetEnumValueAsString(const FString& Name, TEnum Value) {
 	const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, *Name, true);

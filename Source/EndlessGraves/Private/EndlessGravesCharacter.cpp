@@ -21,6 +21,7 @@
 #include "EndlessGravesWeaponSword.h"
 #include "EndlessGravesPlayerController.h"
 #include "EndlessGravesBossCharacter.h"
+#include "EndlessGravesGem.h"
 
 // Sets default values
 AEndlessGravesCharacter::AEndlessGravesCharacter()
@@ -214,6 +215,7 @@ void AEndlessGravesCharacter::StartAttack()
 	if (CurWeapon == EWeaponType::WEAPON_SWORD)
 	{
 		SwordActor->ChangeDamageCoe(1.0f);
+		SwordActor->ToggleTrailEffect(true);
 		// OnSlashSword();
 
 		if (AnimInstance->Montage_IsPlaying(SlashSwordAnimMontage) == false)
@@ -327,6 +329,17 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 		default:
 			break;
 		}
+
+		return;
+	}
+
+	AEndlessGravesGem* Gem = Cast<AEndlessGravesGem>(OtherActor);
+	if (Gem)
+	{
+		AEndlessGravesPlayerController* PController = Cast<AEndlessGravesPlayerController>(Controller);
+		if (PController)
+			PController->OnGameOver(false);
+		return;
 	}
 
 	if (!DamageImmunity)
@@ -359,7 +372,7 @@ void AEndlessGravesCharacter::OnBeginOverlap(UPrimitiveComponent* OverlappedComp
 		else
 		{
 			// check hit result
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter Bone Name %s"), *(SweepResult.BoneName.ToString())));
+			// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("AEndlessGravesCharacter Bone Name %s"), *(SweepResult.BoneName.ToString())));
 			// TODO configurable
 			AEndlessGravesBossCharacter* Boss = Cast<AEndlessGravesBossCharacter>(OtherActor);
 			if (Boss && BossDamageBoneList.Contains(SweepResult.BoneName.ToString()))
@@ -429,4 +442,5 @@ void AEndlessGravesCharacter::CamShakeEffect(float Scale)
 void AEndlessGravesCharacter::OnSlashAnimationEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	SwordActor->ChangeDamageCoe(0.0f);
+	SwordActor->ToggleTrailEffect(false);
 }
