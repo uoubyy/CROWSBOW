@@ -14,7 +14,7 @@ AEndlessGravesWeaponArrow::AEndlessGravesWeaponArrow() : AEndlessGravesProjectil
 	CapsuleComp->AttachToComponent(RootScene, FAttachmentTransformRules::KeepRelativeTransform);
 
 	// TODO object pool
-	InitialLifeSpan = 5.0f;
+	InitialLifeSpan = 3.0f;
 }
 
 

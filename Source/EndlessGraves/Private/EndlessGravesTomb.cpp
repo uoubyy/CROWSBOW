@@ -52,7 +52,9 @@ void AEndlessGravesTomb::SummonEnemy(EEnemyType enemyType, FVector playerLocatio
 		case EEnemyType::EET_Dragon:
 		{
 			// AEndlessGravesDragon* dragon = 
-			World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation + FVector(0.0f, 0.0f, 400.0f), FRotator::ZeroRotator, SpawnInfo);
+			float xOffset = FMath::RandRange(-1.0f, 1.0f);
+			float yOffset = FMath::RandRange(-1.0f, 1.0f);
+			World->SpawnActor<AEndlessGravesDragon>(EnemyDragonClass, SpawnLocation + FVector(xOffset * 1000.0f, yOffset * 1000.0f, 400.0f), FRotator::ZeroRotator, SpawnInfo);
 			break;
 		}
 		default:

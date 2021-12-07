@@ -9,10 +9,15 @@
 
 #include "DrawDebugHelpers.h"
 
+TArray<class AEndlessGravesFireBall*> AEndlessGravesDragon::FireBallList; // need to recode object pool
+
 AEndlessGravesDragon::AEndlessGravesDragon() : AEndlessGravesAICharacter()
 {
 	//CapsuleComp->BodyInstance.bLockXRotation = true;
 	//CapsuleComp->BodyInstance.bLockYRotation = true;
+
+	FireBallSpawnLocation = CreateDefaultSubobject<USceneComponent>(TEXT("MuzzleLocation"));
+	FireBallSpawnLocation->SetupAttachment(RootComponent);
 }
 
 void AEndlessGravesDragon::BeginPlay()
@@ -46,9 +51,20 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 	if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
 		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesDragon::TurnToSenseActor, 0.05f, true);
 
-	DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
+	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 
 	OnPawnSeen(HeardPawn);
+}
+
+AEndlessGravesFireBall* AEndlessGravesDragon::GetAvailableFireBall()
+{
+	for (AEndlessGravesFireBall* FireBall : FireBallList)
+	{
+		if(FireBall->IsAvailable() == true)
+			return FireBall;
+	}
+
+	return nullptr;
 }
 
 void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
@@ -56,25 +72,28 @@ void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 	Super::AttackPlayer(PlayerLocation);
 	ensure(FireBallClass != nullptr);
 	FVector direction = PlayerLocation - GetActorLocation();
-	const FVector SocketLocation = GetMesh()->GetSocketLocation("Bone_002");
+	const FVector SocketLocation = FireBallSpawnLocation->GetComponentLocation(); // GetMesh()->GetSocketLocation("Bone_002");
 	direction.Normalize();
 
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon AttackPlayer %s"), *(GetName())));
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon AttackPlayer %s"), *(GetName())));
 
-	//if (FireBallActor == nullptr)
+	FireBallActor = GetAvailableFireBall();
+	if (FireBallActor == nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("FireBallActor is NULL"));
+		// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("FireBallActor is NULL"));
 		UWorld* const World = GetWorld();
 		if (World)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("FireBallActor is Spawn"));
+			// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("FireBallActor is Spawn"));
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 			
-			FRotator spawnRotation = FRotationMatrix::MakeFromX(direction).Rotator();
-			spawnRotation.Pitch = 30.0f;
+			FRotator spawnRotation = FireBallSpawnLocation->GetComponentRotation(); // FRotator::ZeroRotator;// FRotationMatrix::MakeFromX(direction).Rotator();
+			//spawnRotation.Pitch = 30.0f;
 			FireBallActor = World->SpawnActor<AEndlessGravesFireBall>(FireBallClass, SocketLocation, spawnRotation, ActorSpawnParams);
+
+			FireBallList.Add(FireBallActor);
 		}
 	}
 

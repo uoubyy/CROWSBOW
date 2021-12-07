@@ -21,18 +21,21 @@ AEndlessGravesFireBall::AEndlessGravesFireBall()
 	ParticleSystemComponent->SetAutoActivate(false);
 	ParticleSystemComponent->SetupAttachment(RootScene);
 	ParticleSystemComponent->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
+
+	FireBallActived = false;
 }
 
 void AEndlessGravesFireBall::BeginPlay()
 {
 	Super::BeginPlay();
-	SetActorHiddenInGame(true);
+	SetActorHiddenInGame(FireBallActived == false);
 
 	SphereComponent->OnComponentHit.AddDynamic(this, &AEndlessGravesFireBall::OnHit);
 }
 
 void AEndlessGravesFireBall::Active(FVector location, FVector direction)
 {
+	FireBallActived = true;
 	SetActorLocation(location);
 	SetActorHiddenInGame(false);
 	ParticleSystemComponent->SetActive(true);
@@ -47,6 +50,7 @@ void AEndlessGravesFireBall::Active(FVector location, FVector direction)
 
 void AEndlessGravesFireBall::DeActive()
 {
+	FireBallActived = false;
 	SetActorHiddenInGame(true);
 	ParticleSystemComponent->SetActive(false);
 	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);

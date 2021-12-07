@@ -37,8 +37,12 @@ public:
 
 	virtual void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit) override;
 
+	bool IsAvailable() const { return FireBallActived == false;}
+
 protected:
 	virtual void BeginPlay() override;
 
 	FTimerHandle DeActiveTimerHandle;
+
+	bool FireBallActived = false;
 };

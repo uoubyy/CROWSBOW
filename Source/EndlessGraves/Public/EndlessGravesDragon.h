@@ -14,6 +14,9 @@ class ENDLESSGRAVES_API AEndlessGravesDragon : public AEndlessGravesAICharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleDefaultsOnly, Category = Mesh)
+	class USceneComponent* FireBallSpawnLocation;
+
 public:
 	AEndlessGravesDragon();
 	
@@ -35,4 +38,9 @@ private:
 
 	UPROPERTY()
 	class AEndlessGravesFireBall* FireBallActor = nullptr;
+
+	// UPROPERTY()
+	static TArray<class AEndlessGravesFireBall*> FireBallList;
+
+	class AEndlessGravesFireBall* GetAvailableFireBall();
 };
