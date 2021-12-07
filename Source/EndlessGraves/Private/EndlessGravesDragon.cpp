@@ -27,7 +27,7 @@ void AEndlessGravesDragon::BeginPlay()
 
 void AEndlessGravesDragon::OnPawnSeen(APawn* SeenPawn)
 {
-	DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
+	// DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 
 	Super::OnPawnSeen(SeenPawn);
 
@@ -46,7 +46,9 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 	if (GetWorldTimerManager().IsTimerActive(TurningTimerHandle) == false)
 		GetWorldTimerManager().SetTimer(TurningTimerHandle, this, &AEndlessGravesDragon::TurnToSenseActor, 0.05f, true);
 
-	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
+	DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
+
+	OnPawnSeen(HeardPawn);
 }
 
 void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
@@ -57,16 +59,21 @@ void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 	const FVector SocketLocation = GetMesh()->GetSocketLocation("Bone_002");
 	direction.Normalize();
 
-	if (FireBallActor == nullptr)
+	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon AttackPlayer %s"), *(GetName())));
+
+	//if (FireBallActor == nullptr)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("FireBallActor is NULL"));
 		UWorld* const World = GetWorld();
 		if (World)
 		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, TEXT("FireBallActor is Spawn"));
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 			
 			FRotator spawnRotation = FRotationMatrix::MakeFromX(direction).Rotator();
+			spawnRotation.Pitch = 30.0f;
 			FireBallActor = World->SpawnActor<AEndlessGravesFireBall>(FireBallClass, SocketLocation, spawnRotation, ActorSpawnParams);
 		}
 	}
@@ -76,7 +83,7 @@ void AEndlessGravesDragon::AttackPlayer(FVector PlayerLocation)
 
 void AEndlessGravesDragon::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon::OnBeginOverlap %s"), *(OtherActor->GetName())));
+	// GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Yellow, FString::Printf(TEXT("EndlessGravesDragon::OnBeginOverlap %s"), *(OtherActor->GetName())));
 
 	IEndlessGravesWeaponInterface* Weapon = Cast<IEndlessGravesWeaponInterface>(OtherActor);
 	if (Weapon && DamageImmunity == false)
