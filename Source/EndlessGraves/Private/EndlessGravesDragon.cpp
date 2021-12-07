@@ -9,7 +9,7 @@
 
 #include "DrawDebugHelpers.h"
 
-TArray<class AEndlessGravesFireBall*> AEndlessGravesDragon::FireBallList; // need to recode object pool
+// TArray<class AEndlessGravesFireBall*> AEndlessGravesDragon::FireBallList; // need to recode object pool
 
 AEndlessGravesDragon::AEndlessGravesDragon() : AEndlessGravesAICharacter()
 {
@@ -34,14 +34,14 @@ void AEndlessGravesDragon::OnPawnSeen(APawn* SeenPawn)
 {
 	// DrawDebugSphere(GetWorld(), SeenPawn->GetActorLocation(), 32.0f, 12, FColor::Red, false, 10.0f);
 
-	Super::OnPawnSeen(SeenPawn);
+	// Super::OnPawnSeen(SeenPawn);
 
-	float distance = (SensedLocation - GetActorLocation()).Size();
+	//float distance = (SensedLocation - GetActorLocation()).Size();
 
-	if (distance <= MaxAttackDistance)
-	{
-		AttackPlayer(SensedLocation);
-	}
+	//if (distance <= MaxAttackDistance)
+	//{
+	//	AttackPlayer(SensedLocation);
+	//}
 }
 
 void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Location, float Volume)
@@ -53,7 +53,14 @@ void AEndlessGravesDragon::OnNoiseHeard(APawn* HeardPawn, const FVector& Locatio
 
 	// DrawDebugSphere(GetWorld(), HeardPawn->GetActorLocation(), 32.0f, 12, FColor::Yellow, false, 10.0f);
 
-	OnPawnSeen(HeardPawn);
+	// OnPawnSeen(HeardPawn);
+
+	float distance = (SensedLocation - GetActorLocation()).Size();
+
+	if (distance <= MaxAttackDistance)
+	{
+		AttackPlayer(SensedLocation);
+	}
 }
 
 AEndlessGravesFireBall* AEndlessGravesDragon::GetAvailableFireBall()

@@ -38,14 +38,14 @@ protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* WeaponSlot2;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UImage* Life1;
+	//UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UImage* Life1;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UImage* Life2;
+	//UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UImage* Life2;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UImage* Life3;
+	//UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UImage* Life3;
 
 	UPROPERTY(BlueprintReadOnly)
 	int LeftLife = 3;
