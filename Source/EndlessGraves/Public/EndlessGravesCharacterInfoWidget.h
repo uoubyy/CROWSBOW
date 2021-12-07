@@ -29,8 +29,8 @@ public:
 	void SwitchWeapon(EWeaponType weaponType);
 
 protected:
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	UImage* Avatar;
+	//UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	//UImage* Avatar;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	UImage* WeaponSlot1;
